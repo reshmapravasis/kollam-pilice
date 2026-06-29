@@ -1,0 +1,648 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\PageResource\Pages;
+use App\Models\Page;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use FilamentTiptapEditor\TiptapEditor;
+use FilamentTiptapEditor\Enums\TiptapOutput;
+use Filament\Forms\Components\Actions\Action;
+
+class PageResource extends Resource
+{
+    protected static ?string $model = Page::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-document-duplicate';
+
+    protected static ?string $recordTitleAttribute = 'title';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\Tabs::make('Page Editor')
+                    ->tabs([
+                        Forms\Components\Tabs\Tab::make('General')
+                            ->icon('heroicon-o-information-circle')
+                            ->schema([
+                                Forms\Components\Grid::make(2)
+                                    ->schema([
+                                        Forms\Components\Grid::make(2)->schema([
+                                            Forms\Components\TextInput::make('title')
+                                                ->label('Title (English)')
+                                                ->required()
+                                                ->maxLength(255)
+                                                ->live(onBlur: true)
+                                                ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                                            Forms\Components\TextInput::make('title_ml')
+                                                ->label('Title (Malayalam)')
+                                                ->maxLength(255),
+                                        ]),
+                                        Forms\Components\Select::make('type')
+                                            ->options([
+                                                'page' => 'Page',
+                                                'post' => 'Blog Post',
+                                            ])
+                                            ->default('page')
+                                            ->required()
+                                            ->live(),
+                                        Forms\Components\Select::make('parent_id')
+                                            ->label('Parent Page')
+                                            ->relationship('parent', 'title')
+                                            ->placeholder('Select a parent page (optional)')
+                                            ->searchable(),
+                                        Forms\Components\Toggle::make('is_published')
+                                            ->label('Published')
+                                            ->default(true),
+                                        Forms\Components\FileUpload::make('featured_image')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->disk('public')
+                                            ->directory('pages')
+                                            ->visible(fn (Forms\Get $get) => $get('type') === 'post'),
+                                        Forms\Components\Textarea::make('excerpt')
+                                            ->rows(2)
+                                            ->visible(fn (Forms\Get $get) => $get('type') === 'post'),
+                                    ]),
+                            ]),
+
+                        Forms\Components\Tabs\Tab::make('Content')
+                            ->icon('heroicon-o-pencil-square')
+                            ->schema([
+                                Forms\Components\Builder::make('content')
+                                    ->blocks([
+                                        Forms\Components\Builder\Block::make('marquee')
+                                             ->label(fn (?array $state) => '📢 News Ticker' . ($state ? ': ' . \Illuminate\Support\Str::limit($state['items'][0]['text'] ?? '', 20) : ''))
+                                             ->schema([
+                                                 Forms\Components\Repeater::make('items')
+                                                     ->schema([
+                                                         Forms\Components\Grid::make(2)->schema([
+                                                             Forms\Components\TextInput::make('text')->label('Text (English)')->required(),
+                                                             Forms\Components\TextInput::make('text_ml')->label('Text (Malayalam)')->required(),
+                                                         ])->columnSpanFull(),
+                                                         Forms\Components\Select::make('link')
+                                                             ->label('Link to Page')
+                                                             ->options(fn () => \App\Models\Page::where('is_published', true)->pluck('title', 'slug')->toArray())
+                                                             ->searchable()
+                                                             ->nullable(),
+                                                     ])
+                                                     ->minItems(1)
+                                                     ->label('Marquee Items'),
+                                                 Forms\Components\Grid::make(3)
+                                                     ->schema([
+                                                         Forms\Components\TextInput::make('speed')
+                                                             ->numeric()
+                                                             ->default(40)
+                                                             ->helperText('Lower is slower, higher is faster (default: 40)'),
+                                                         Forms\Components\TextInput::make('gap')
+                                                             ->default('5rem')
+                                                             ->helperText('Gap between items (e.g., 5rem, 50px)'),
+                                                         Forms\Components\TextInput::make('separator')
+                                                             ->default('•')
+                                                             ->placeholder('e.g. • or | or **'),
+                                                         Forms\Components\ColorPicker::make('bg_color')->default('#1e40af'),
+                                                         Forms\Components\ColorPicker::make('text_color')->default('#ffffff'),
+                                                         Forms\Components\Select::make('text_effect')
+                                                             ->options([
+                                                                 'none' => 'None',
+                                                                 'shadow' => 'Shadow',
+                                                                 'glow' => 'Glow',
+                                                                 'outline' => 'Outline',
+                                                             ])->default('none'),
+                                                         Forms\Components\Select::make('font_size')
+                                                             ->options([
+                                                                 'text-xs' => 'Extra Small',
+                                                                 'text-sm' => 'Small',
+                                                                 'text-base' => 'Normal',
+                                                                 'text-lg' => 'Large',
+                                                                 'text-xl' => 'Extra Large',
+                                                             ])->default('text-base'),
+                                                         Forms\Components\Select::make('font_weight')
+                                                             ->options([
+                                                                 'font-normal' => 'Normal',
+                                                                 'font-medium' => 'Medium',
+                                                                 'font-bold' => 'Bold',
+                                                                 'font-black' => 'Black',
+                                                             ])->default('font-medium'),
+                                                     ]),
+                                             ]),
+                                        Forms\Components\Builder\Block::make('rich_text')
+                                            ->label(fn (?array $state) => '📝 Rich Text' . ($state ? ': ' . \Illuminate\Support\Str::limit(strip_tags($state['content'] ?? ''), 20) : ''))
+                                            ->schema([
+                                                Forms\Components\Grid::make(2)->schema([
+                                                    TiptapEditor::make('content_ml')->label('Malayalam Content')->output(TiptapOutput::Html)->profile('default'),
+                                                    TiptapEditor::make('content')->label('English Content')->output(TiptapOutput::Html)->profile('default'),
+                                                ])->columnSpanFull(),
+                                                Forms\Components\Select::make('text_size')
+                                                    ->options([
+                                                        'text-sm' => 'Small',
+                                                        'text-base' => 'Normal',
+                                                        'text-lg' => 'Medium',
+                                                        'text-xl' => 'Large',
+                                                    ])
+                                                    ->default('text-base'),
+                                            ]),
+                                        Forms\Components\Builder\Block::make('button_link')
+                                            ->label(fn (?array $state) => '🔘 Action Button' . ($state ? ': ' . ($state['button_text'] ?? '') : ''))
+                                            ->schema([
+                                                Forms\Components\Grid::make(3)->schema([
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        Forms\Components\TextInput::make('button_text')->label('Button Text (English)')->default('Read More')->required(),
+                                                        Forms\Components\TextInput::make('button_text_ml')->label('Button Text (Malayalam)')->default('കൂടുതൽ വായിക്കുക'),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\Select::make('target_page')
+                                                        ->options(fn () => \App\Models\Page::where('is_published', true)->pluck('title', 'slug')->toArray())
+                                                        ->searchable()
+                                                        ->required(),
+                                                    Forms\Components\Select::make('alignment')
+                                                        ->options([
+                                                            'text-left' => 'Left',
+                                                            'text-center' => 'Center',
+                                                            'text-right' => 'Right',
+                                                        ])->default('text-center'),
+                                                    Forms\Components\ColorPicker::make('button_color')->default('#2563eb'),
+                                                    Forms\Components\ColorPicker::make('text_color')->default('#ffffff'),
+                                                ]),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('hero')
+                                            ->label(fn (?array $state) => '🚀 Hero Sections' . ($state ? ': ' . ($state['heading'] ?? '') : ''))
+                                            ->schema([
+                                                Forms\Components\Grid::make(2)->schema([
+                                                    Forms\Components\TextInput::make('heading')->label('Heading (English)'),
+                                                    Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)'),
+                                                ]),
+                                                Forms\Components\ColorPicker::make('heading_color')->default('#ffffff'),
+                                                Forms\Components\Select::make('heading_alignment')
+                                                    ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
+                                                    ->default('text-center'),
+                                                Forms\Components\Grid::make(2)->schema([
+                                                    Forms\Components\TextInput::make('subheading')->label('Subheading (English)'),
+                                                    Forms\Components\TextInput::make('subheading_ml')->label('Subheading (Malayalam)'),
+                                                ]),
+                                                Forms\Components\ColorPicker::make('subheading_color')->default('#dbeafe'),
+                                                Forms\Components\Select::make('text_size')
+                                                    ->options([
+                                                        'text-xl' => 'Small',
+                                                        'text-2xl' => 'Normal',
+                                                        'text-3xl' => 'Large',
+                                                        'text-4xl' => 'Extra Large',
+                                                    ])->default('text-2xl'),
+                                                Forms\Components\Grid::make(2)->schema([
+                                                    TiptapEditor::make('content_ml')->label('Malayalam Content')->output(TiptapOutput::Html),
+                                                    TiptapEditor::make('content')->label('English Content')->output(TiptapOutput::Html),
+                                                ])->columnSpanFull(),
+                                                Forms\Components\Grid::make(2)->schema([
+                                                    Forms\Components\TextInput::make('button_text')->label('Button Text (English)'),
+                                                    Forms\Components\TextInput::make('button_text_ml')->label('Button Text (Malayalam)'),
+                                                ]),
+                                                Forms\Components\TextInput::make('button_link'),
+                                                Forms\Components\FileUpload::make('background_image')
+                                                    ->label('Background Image')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->disk('public')
+                                                    ->directory('hero-images')
+                                                    
+                                                    ,
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('image')
+                                            ->label(fn (?array $state) => '🖼️ Image' . ($state ? ': ' . ($state['alt'] ?? ($state['caption'] ?? '')) : ''))
+                                            ->schema([
+                                                Forms\Components\FileUpload::make('image')
+                                                ->image()
+                                                ->imageEditor()
+                                                ->disk('public')
+                                                ->directory('images')
+                                                ->required(),
+                                                Forms\Components\Grid::make(3)
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('alt'),
+                                                        Forms\Components\TextInput::make('caption'),
+                                                        Forms\Components\Select::make('width_percent')
+                                                            ->label('Display Width')
+                                                            ->options([
+                                                                '100' => 'Full Width',
+                                                                '80' => 'Large (80%)',
+                                                                '60' => 'Medium (60%)',
+                                                                '50' => 'Half (50%)',
+                                                                '40' => 'Compact (40%)',
+                                                                '25' => 'Small (25%)',
+                                                            ])
+                                                            ->default('100'),
+                                                    ]),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('video')
+                                            ->label(fn (?array $state) => '🎥 Single Video' . ($state ? ': ' . ($state['title'] ?? '') : ''))
+                                            ->schema([
+                                                Forms\Components\Select::make('type')
+                                                    ->options([
+                                                        'url' => 'Video URL (YouTube/Vimeo)',
+                                                        'file' => 'Video File (Upload)',
+                                                    ])->default('url')->live(),
+                                                Forms\Components\TextInput::make('url')
+                                                    ->label('YouTube/Vimeo URL')
+                                                    ->visible(fn (Forms\Get $get) => $get('type') === 'url'),
+                                                Forms\Components\FileUpload::make('file')
+                                                    ->label('Video File')
+                                                    ->disk('public')
+                                                    ->directory('videos')
+                                                    ->visible(fn (Forms\Get $get) => $get('type') === 'file'),
+                                                Forms\Components\Grid::make(2)
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('title'),
+                                                        Forms\Components\Select::make('width_percent')
+                                                            ->label('Display Width')
+                                                            ->options([
+                                                                '100' => 'Full Width',
+                                                                '80' => 'Large (80%)',
+                                                                '60' => 'Medium (60%)',
+                                                                '50' => 'Half (50%)',
+                                                                '40' => 'Compact (40%)',
+                                                                '25' => 'Small (25%)',
+                                                            ])
+                                                            ->default('100'),
+                                                    ]),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('split_content')
+                                            ->label(fn (?array $state) => '↔️ Split: Text & Image' . ($state ? ': ' . ($state['heading'] ?? '') : ''))
+                                            ->schema([
+                                                Forms\Components\Grid::make(4)->schema([
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        Forms\Components\TextInput::make('heading')->label('Heading (English)'),
+                                                        Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)'),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
+                                                    Forms\Components\Select::make('heading_alignment')
+                                                        ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
+                                                        ->default('text-left'),
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        TiptapEditor::make('content_ml')->label('Malayalam Content')->output(TiptapOutput::Html),
+                                                        TiptapEditor::make('content')->label('English Content')->output(TiptapOutput::Html),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\ColorPicker::make('text_color')->default('#374151'),
+                                                    Forms\Components\FileUpload::make('image')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->disk('public')
+                                                    ->directory('content'),
+                                                    Forms\Components\Select::make('image_position')->options(['left' => 'Left', 'right' => 'Right','center' => 'Center'])->default('Left'),
+                                                    Forms\Components\Select::make('image_width')
+                                                        ->options([
+                                                            'w-1/4' => 'Small (25%)',
+                                                            'w-1/3' => 'Medium (33%)',
+                                                            'w-1/2' => 'Half (50%)',
+                                                            'w-2/3' => 'Large (66%)',
+                                                            'w-3/4' => 'Huge (75%)',
+                                                        ])
+                                                        ->default('w-1/2'),
+                                                    Forms\Components\Select::make('aspect_ratio')
+                                                        ->label('Image Aspect Ratio')
+                                                        ->options([
+                                                            'aspect-auto' => 'Original',
+                                                            'aspect-square' => 'Square (1:1)',
+                                                            'aspect-video' => 'Video (16:9)',
+                                                            'aspect-[4/3]' => 'Standard (4:3)',
+                                                            'aspect-[3/4]' => 'Portrait (3:4)',
+                                                        ])
+                                                        ->default('aspect-auto'),
+                                                    Forms\Components\TextInput::make('anchor_id')->label('Anchor ID (for jumping to section)')->placeholder('e.g. about-us'),
+                                                ]),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('split_video_content')
+                                            ->label(fn (?array $state) => '↔️ Split: Text & Video' . ($state ? ': ' . ($state['heading'] ?? '') : ''))
+                                            ->schema([
+                                                Forms\Components\Grid::make(4)->schema([
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        Forms\Components\TextInput::make('heading')->label('Heading (English)'),
+                                                        Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)'),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
+                                                    Forms\Components\Select::make('heading_alignment')
+                                                        ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
+                                                        ->default('text-left'),
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        TiptapEditor::make('content_ml')->label('Malayalam Content')->output(TiptapOutput::Html),
+                                                        TiptapEditor::make('content')->label('English Content')->output(TiptapOutput::Html),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\ColorPicker::make('text_color')->default('#374151'),
+                                                    Forms\Components\Select::make('video_type')->options(['url' => 'URL', 'file' => 'Upload'])->default('url')->live(),
+                                                    Forms\Components\TextInput::make('video_url')->visible(fn (Forms\Get $get) => $get('video_type') === 'url'),
+                                                    Forms\Components\FileUpload::make('video_file')
+                                                        ->disk('public')
+                                                        ->directory('videos')
+                                                        ->visible(fn (Forms\Get $get) => $get('video_type') === 'file'),
+                                                    Forms\Components\Select::make('video_position')->options(['left' => 'Left', 'right' => 'Right'])->default('right'),
+                                                    Forms\Components\Select::make('video_width')
+                                                        ->options([
+                                                            'w-1/4' => 'Small (25%)',
+                                                            'w-1/3' => 'Medium (33%)',
+                                                            'w-1/2' => 'Half (50%)',
+                                                            'w-2/3' => 'Large (66%)',
+                                                            'w-3/4' => 'Huge (75%)',
+                                                        ])
+                                                        ->default('w-1/2'),
+                                                    Forms\Components\TextInput::make('anchor_id'),
+                                                ]),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('services')
+                                            ->label(fn (?array $state) => '🛠️ Services Grid' . ($state ? ': ' . ($state['heading'] ?? '') : ''))
+                                            ->schema([
+                                                Forms\Components\Grid::make(4)->schema([
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        Forms\Components\TextInput::make('heading')->label('Heading (English)')->default('Our Services'),
+                                                        Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)')->default('നമ്മുടെ സേവനങ്ങൾ'),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\Select::make('heading_alignment')
+                                                        ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
+                                                        ->default('text-center'),
+                                                    Forms\Components\Select::make('columns')
+                                                        ->options([
+                                                            '2' => '2 Columns',
+                                                            '3' => '3 Columns',
+                                                            '4' => '4 Columns',
+                                                            '5' => '5 Columns',
+                                                            '6' => '6 Columns',
+                                                        ])->default('3'),
+                                                    Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
+                                                    Forms\Components\Select::make('view_all_link')
+                                                        ->label('Target Page')
+                                                        ->options(fn () => \App\Models\Page::where('is_published', true)->pluck('title', 'slug')->toArray())
+                                                        ->searchable()
+                                                        ->placeholder('Select a page...'),
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        Forms\Components\TextInput::make('view_all_text')->label('View All Button Text (English)')->default('View All'),
+                                                        Forms\Components\TextInput::make('view_all_text_ml')->label('View All Button Text (Malayalam)')->default('കൂടുതൽ കാണുക'),
+                                                    ])->columnSpanFull(),
+                                                ]),
+                                                Forms\Components\Grid::make(2)->schema([
+                                                    TiptapEditor::make('description_ml')->label('Malayalam Description')->output(TiptapOutput::Html),
+                                                    TiptapEditor::make('description')->label('English Description')->output(TiptapOutput::Html),
+                                                ])->columnSpanFull(),
+                                                Forms\Components\Repeater::make('items')
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('title'),
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            TiptapEditor::make('description_ml')->label('Malayalam Description')->output(TiptapOutput::Html),
+                                                            TiptapEditor::make('description')->label('English Description')->output(TiptapOutput::Html),
+                                                        ])->columnSpanFull(),
+                                                        Forms\Components\FileUpload::make('icon')
+                                                            ->disk('public')
+                                                            ->directory('services'),
+                                                    ])->grid(3),
+                                                Forms\Components\TextInput::make('anchor_id'),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('testimonials')
+                                            ->label(fn (?array $state) => '💬 Testimonials' . ($state ? ': ' . ($state['heading'] ?? '') : ''))
+                                            ->schema([
+                                                Forms\Components\Grid::make(2)->schema([
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        Forms\Components\TextInput::make('heading')->label('Heading (English)')->default('What They Say'),
+                                                        Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)')->default('അവർ എന്താണ് പറയുന്നത്'),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\Select::make('heading_alignment')
+                                                        ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
+                                                        ->default('text-center'),
+                                                ]),
+                                                Forms\Components\Repeater::make('items')
+                                                    ->schema([
+                                                        Forms\Components\Grid::make(3)->schema([
+                                                            Forms\Components\Grid::make(2)->schema([
+                                                                Forms\Components\TextInput::make('name')->label('Name (English)'),
+                                                                Forms\Components\TextInput::make('name_ml')->label('Name (Malayalam)'),
+                                                            ]),
+                                                            Forms\Components\Grid::make(2)->schema([
+                                                                Forms\Components\TextInput::make('role')->label('Role/Designation (English)'),
+                                                                Forms\Components\TextInput::make('role_ml')->label('Role/Designation (Malayalam)'),
+                                                            ]),
+                                                            Forms\Components\FileUpload::make('avatar')
+                                                                ->image()
+                                                                ->imageEditor()
+                                                                ->disk('public')
+                                                                ->directory('testimonials')
+                                                                ->avatar(),
+                                                        ]),
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            TiptapEditor::make('quote')->label('Quote (English)')->output(TiptapOutput::Html)->required(),
+                                                            TiptapEditor::make('quote_ml')->label('Quote (Malayalam)')->output(TiptapOutput::Html),
+                                                        ]),
+                                                    ]),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('contact_form')
+                                            ->label(fn (?array $state) => '📧 Contact Form' . ($state ? ': ' . ($state['heading'] ?? '') : ''))
+                                            ->schema([
+                                                Forms\Components\Grid::make(2)->schema([
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        Forms\Components\TextInput::make('heading')->label('Heading (English)')->default('Contact Us'),
+                                                        Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)')->default('ഞങ്ങളെ ബന്ധപ്പെടുക'),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\Select::make('heading_alignment')
+                                                        ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
+                                                        ->default('text-center'),
+                                                ]),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('video_gallery')
+                                            ->label(fn (?array $state) => '🎥 Video Gallery' . ($state ? ': ' . ($state['heading'] ?? '') : ''))
+                                            ->schema([
+                                                Forms\Components\Grid::make(4)->schema([
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        Forms\Components\TextInput::make('heading')->label('Heading (English)')->default('Video Gallery'),
+                                                        Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)')->default('വീഡിയോ ഗാലറി'),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\Select::make('heading_alignment')
+                                                        ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
+                                                        ->default('text-center'),
+                                                    Forms\Components\Select::make('columns')
+                                                        ->options([
+                                                            '2' => '2 Columns',
+                                                            '3' => '3 Columns',
+                                                            '4' => '4 Columns',
+                                                        ])->default('3'),
+                                                    Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
+                                                ]),
+                                                Forms\Components\Repeater::make('videos')
+                                                    ->schema([
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            Forms\Components\TextInput::make('title')->label('Title (English)'),
+                                                            Forms\Components\TextInput::make('title_ml')->label('Title (Malayalam)'),
+                                                        ]),
+                                                        Forms\Components\Select::make('type')
+                                                            ->options([
+                                                                'url' => 'Video URL (YouTube/Vimeo)',
+                                                                'file' => 'Video File (Upload)',
+                                                            ])->default('url')->live(),
+                                                        Forms\Components\TextInput::make('url')
+                                                            ->label('Video URL')
+                                                            ->placeholder('https://www.youtube.com/watch?v=...')
+                                                            ->visible(fn (Forms\Get $get) => $get('type') === 'url'),
+                                                        Forms\Components\FileUpload::make('file')
+                                                            ->label('Video File')
+                                                            ->disk('public')
+                                                            ->directory('videos')
+                                                            ->visible(fn (Forms\Get $get) => $get('type') === 'file'),
+                                                    ])->grid(2),
+                                                Forms\Components\TextInput::make('anchor_id')->placeholder('e.g. video-gallery'),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('gallery')
+                                            ->label(fn (?array $state) => '🖼️ Photo Gallery' . ($state ? ': ' . ($state['heading'] ?? '') : ''))
+                                            ->schema([
+                                                Forms\Components\Grid::make(3)->schema([
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        Forms\Components\TextInput::make('heading')->label('Heading (English)'),
+                                                        Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)'),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\Select::make('heading_alignment')
+                                                        ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
+                                                        ->default('text-center'),
+                                                ]),
+                                                Forms\Components\Select::make('columns')
+                                                    ->options([
+                                                        '2' => '2 Columns',
+                                                        '3' => '3 Columns',
+                                                        '4' => '4 Columns',
+                                                    ])->default('3'),
+                                                Forms\Components\Repeater::make('images')
+                                                    ->schema([
+                                                        Forms\Components\FileUpload::make('image')
+                                                        ->image()
+                                                        ->imageEditor()
+                                                        ->disk('public')
+                                                        ->directory('gallery'),
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            Forms\Components\TextInput::make('label')->label('Label (English)'),
+                                                            Forms\Components\TextInput::make('label_ml')->label('Label (Malayalam)'),
+                                                        ]),
+                                                    ])->grid(2),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('stats')
+                                            ->label(fn (?array $state) => '📊 Stats Overview' . ($state ? ': ' . count($state['items'] ?? []) . ' items' : ''))
+                                            ->schema([
+                                                Forms\Components\Repeater::make('items')
+                                                    ->schema([
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            Forms\Components\TextInput::make('label')->label('Label (English)')->placeholder('e.g. Clients'),
+                                                            Forms\Components\TextInput::make('label_ml')->label('Label (Malayalam)'),
+                                                        ]),
+                                                        Forms\Components\TextInput::make('number')->placeholder('e.g. 500+'),
+                                                    ])->grid(2),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('info_cards')
+                                            ->label(fn (?array $state) => '🗂️ Info Cards' . ($state ? ': ' . count($state['items'] ?? []) . ' items' : ''))
+                                            ->schema([
+                                                Forms\Components\Repeater::make('items')
+                                                    ->schema([
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            Forms\Components\TextInput::make('title')->label('Title (English)'),
+                                                            Forms\Components\TextInput::make('title_ml')->label('Title (Malayalam)'),
+                                                        ]),
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            Forms\Components\Textarea::make('description')->label('Description (English)'),
+                                                            Forms\Components\Textarea::make('description_ml')->label('Description (Malayalam)'),
+                                                        ]),
+                                                        Forms\Components\ColorPicker::make('bg_color')->default('#001a72'),
+                                                        Forms\Components\ColorPicker::make('text_color')->default('#ffffff'),
+                                                    ])->grid(2),
+                                            ]),
+                                    ])
+                                    ->collapsible()
+                                    ->cloneable()
+                                    ->blockNumbers(false)
+                                    ->extraItemActions([
+                                        Action::make('preview')
+                                            ->icon('heroicon-m-eye')
+                                            ->label('Preview')
+                                            ->modalHeading('Section Preview')
+                                            ->modalWidth('7xl')
+                                            ->modalSubmitAction(false)
+                                            ->modalCancelAction(false)
+                                            ->modalContent(fn (array $state, array $arguments, Forms\Components\Builder $component): \Illuminate\Contracts\View\View => (function() use ($state, $arguments) {
+                                                $itemKey = $arguments['item'];
+                                                $selectedItem = $state[$itemKey] ?? null;
+                                                
+                                                if (! $selectedItem) {
+                                                    return view('filament.forms.components.block-preview', ['blockType' => 'unknown']);
+                                                }
+                                                
+                                                return view(
+                                                    'filament.forms.components.block-preview',
+                                                    array_merge(
+                                                        ['blockType' => $selectedItem['type'] ?? 'unknown'],
+                                                        $selectedItem['data'] ?? []
+                                                    )
+                                                );
+                                            })()),
+                                    ])
+                                    ->columnSpanFull(),
+                            ]),
+
+                        Forms\Components\Tabs\Tab::make('SEO')
+                            ->icon('heroicon-o-presentation-chart-line')
+                            ->schema([
+                                Forms\Components\Grid::make(2)->schema([
+                                    Forms\Components\TextInput::make('seo_title')->label('SEO Title (English)'),
+                                    Forms\Components\TextInput::make('seo_title_ml')->label('SEO Title (Malayalam)'),
+                                ]),
+                                Forms\Components\Grid::make(2)->schema([
+                                    Forms\Components\Textarea::make('seo_description')->label('SEO Description (English)'),
+                                    Forms\Components\Textarea::make('seo_description_ml')->label('SEO Description (Malayalam)'),
+                                ]),
+                            ]),
+                    ])
+                    ->columnSpanFull(),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('title')->searchable(),
+                Tables\Columns\TextColumn::make('type')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'page' => 'gray',
+                        'post' => 'success',
+                    }),
+                Tables\Columns\TextColumn::make('parent.title')->label('Parent Page'),
+                Tables\Columns\ToggleColumn::make('is_published'),
+                Tables\Columns\TextColumn::make('updated_at')->dateTime(),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListPages::route('/'),
+            'create' => Pages\CreatePage::route('/create'),
+            'edit' => Pages\EditPage::route('/{record}/edit'),
+        ];
+    }
+}
