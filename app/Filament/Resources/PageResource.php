@@ -61,7 +61,6 @@ class PageResource extends Resource
                                             ->default(true),
                                         Forms\Components\FileUpload::make('featured_image')
                                             ->image()
-                                            ->imageEditor()
                                             ->disk('public')
                                             ->directory('pages')
                                             ->visible(fn (Forms\Get $get) => $get('type') === 'post'),
@@ -205,7 +204,6 @@ class PageResource extends Resource
                                                 Forms\Components\FileUpload::make('background_image')
                                                     ->label('Background Image')
                                                     ->image()
-                                                    ->imageEditor()
                                                     ->disk('public')
                                                     ->directory('hero-images')
                                                     
@@ -217,7 +215,6 @@ class PageResource extends Resource
                                             ->schema([
                                                 Forms\Components\FileUpload::make('image')
                                                 ->image()
-                                                ->imageEditor()
                                                 ->disk('public')
                                                 ->directory('images')
                                                 ->required(),
@@ -290,8 +287,6 @@ class PageResource extends Resource
                                                     ])->columnSpanFull(),
                                                     Forms\Components\ColorPicker::make('text_color')->default('#374151'),
                                                     Forms\Components\FileUpload::make('image')
-                                                    ->image()
-                                                    ->imageEditor()
                                                     ->disk('public')
                                                     ->directory('content'),
                                                     Forms\Components\Select::make('image_position')->options(['left' => 'Left', 'right' => 'Right','center' => 'Center'])->default('Left'),
@@ -428,13 +423,11 @@ class PageResource extends Resource
                                                             ]),
                                                             Forms\Components\FileUpload::make('avatar')
                                                                 ->image()
-                                                                ->imageEditor()
                                                                 ->disk('public')
-                                                                ->directory('testimonials')
-                                                                ->avatar(),
+                                                                ->directory('testimonials'),
                                                         ]),
                                                         Forms\Components\Grid::make(2)->schema([
-                                                            TiptapEditor::make('quote')->label('Quote (English)')->output(TiptapOutput::Html)->required(),
+                                                            TiptapEditor::make('quote')->label('Quote (English)')->output(TiptapOutput::Html),
                                                             TiptapEditor::make('quote_ml')->label('Quote (Malayalam)')->output(TiptapOutput::Html),
                                                         ]),
                                                     ]),
@@ -515,16 +508,56 @@ class PageResource extends Resource
                                                         '3' => '3 Columns',
                                                         '4' => '4 Columns',
                                                     ])->default('3'),
+                                                Forms\Components\Toggle::make('enable_marquee')
+                                                    ->label('Enable Moving Effect (Marquee)')
+                                                    ->default(true),
                                                 Forms\Components\Repeater::make('images')
                                                     ->schema([
                                                         Forms\Components\FileUpload::make('image')
-                                                        ->image()
-                                                        ->imageEditor()
                                                         ->disk('public')
-                                                        ->directory('gallery'),
+                                                        ->directory('gallery')->required(),
                                                         Forms\Components\Grid::make(2)->schema([
                                                             Forms\Components\TextInput::make('label')->label('Label (English)'),
                                                             Forms\Components\TextInput::make('label_ml')->label('Label (Malayalam)'),
+                                                        ]),
+                                                    ])->grid(2),
+                                            ]),
+
+                                        Forms\Components\Builder\Block::make('team_members')
+                                            ->label(fn (?array $state) => '👥 Team Members' . ($state ? ': ' . ($state['heading'] ?? '') : ''))
+                                            ->schema([
+                                                Forms\Components\Grid::make(3)->schema([
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        Forms\Components\TextInput::make('heading')->label('Heading (English)'),
+                                                        Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)'),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\Select::make('heading_alignment')
+                                                        ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
+                                                        ->default('text-center'),
+                                                ]),
+                                                Forms\Components\Select::make('columns')
+                                                    ->options([
+                                                        '2' => '2 Columns',
+                                                        '3' => '3 Columns',
+                                                        '4' => '4 Columns',
+                                                    ])->default('3'),
+                                                Forms\Components\Repeater::make('members')
+                                                    ->schema([
+                                                        Forms\Components\FileUpload::make('image')
+                                                            ->disk('public')
+                                                            ->directory('team')
+                                                            ->required(),
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            Forms\Components\TextInput::make('name')->label('Name (English)')->required(),
+                                                            Forms\Components\TextInput::make('name_ml')->label('Name (Malayalam)'),
+                                                        ]),
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            Forms\Components\TextInput::make('designation')->label('Designation (English)'),
+                                                            Forms\Components\TextInput::make('designation_ml')->label('Designation (Malayalam)'),
+                                                        ]),
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            Forms\Components\TextInput::make('extra_details')->label('Extra Details (e.g. Phone/Email) (English)'),
+                                                            Forms\Components\TextInput::make('extra_details_ml')->label('Extra Details (Malayalam)'),
                                                         ]),
                                                     ])->grid(2),
                                             ]),

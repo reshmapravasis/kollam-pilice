@@ -12,6 +12,7 @@ class Menu extends Model
         'label_ml',
         'url',
         'parent_id',
+        'order_column',
     ];
 
     public function parent()

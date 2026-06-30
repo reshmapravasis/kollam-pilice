@@ -70,7 +70,6 @@ class MenuResource extends Resource
                         if ($state) {
                             $page = Page::find($state);
                             if ($page) {
-                                $set('label', $page->title);
                                 $url = ($page->slug === 'home') ? '/' : '/' . $page->slug;
                                 $set('url', $url);
 
@@ -96,10 +95,13 @@ class MenuResource extends Resource
                 Forms\Components\Grid::make(2)->schema([
                     Forms\Components\TextInput::make('label')
                         ->label('Label (English)')
-                        ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->placeholder(fn (Forms\Get $get) => \App\Models\Page::find($get('page_id'))?->title ?? 'Leave empty to use page title')
+                        ->dehydrateStateUsing(fn ($state, Forms\Get $get) => $state ?: \App\Models\Page::find($get('page_id'))?->title ?? 'Untitled'),
                     Forms\Components\TextInput::make('label_ml')
                         ->label('Label (Malayalam)')
+                        ->placeholder(fn (Forms\Get $get) => \App\Models\Page::find($get('page_id'))?->title_ml ?? \App\Models\Page::find($get('page_id'))?->title ?? 'പേജ് ശീർഷകം ഉപയോഗിക്കാൻ ശൂന്യമായി വിടുക.')
+                        ->dehydrateStateUsing(fn ($state, Forms\Get $get) => $state ?: \App\Models\Page::find($get('page_id'))?->title_ml ?: \App\Models\Page::find($get('page_id'))?->title ?? 'Untitled')
                         ->maxLength(255),
                 ]),
                 Forms\Components\Hidden::make('url')
@@ -130,6 +132,7 @@ class MenuResource extends Resource
                 Tables\Columns\TextColumn::make('parent.label')->label('Parent'),
                 Tables\Columns\TextColumn::make('order_column')->label('Order')->sortable(),
             ])
+            ->reorderable('order_column')
             ->defaultSort('order_column')
             ->filters([
                 Tables\Filters\SelectFilter::make('location')

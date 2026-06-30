@@ -129,7 +129,7 @@
         <!-- Navigation Bar -->
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 md:h-20 flex justify-between items-center relative">
             <!-- Mobile Menu Button -->
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 rounded-lg hover:bg-black/5" aria-label="Toggle menu">
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden p-2 rounded-lg hover:bg-black/5" aria-label="Toggle menu">
                 <svg x-show="!mobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                 </svg>
@@ -139,20 +139,20 @@
             </button>
 
             <!-- Logo -->
-            <div class="flex-shrink-0 flex items-center z-20">
-                <a href="/" class="flex items-center space-x-2 md:space-x-3 transition-transform hover:scale-[1.02]">
+            <div class="flex items-center z-20 min-w-0 mr-2 md:mr-4">
+                <a href="/" class="flex items-center space-x-2 md:space-x-3 transition-transform hover:scale-[1.02] min-w-0">
                     @if($siteLogo)
-                        <img src="{{ media_url($siteLogo) }}" alt="{{ $siteName }}" class="h-8 w-auto md:h-10">
+                        <img src="{{ media_url($siteLogo) }}" alt="{{ $siteName }}" class="h-8 w-auto md:h-10 flex-shrink-0">
                     @endif
-                    <span class="text-sm md:text-base lg:text-lg font-bold leading-tight line-clamp-2 max-w-[150px] sm:max-w-[250px] md:max-w-[300px] lg:max-w-[400px] xl:max-w-[500px]" style="color: var(--header-text)">
-                        <span x-show="currentLang === 'en'">{{ $siteName }}</span>
-                        <span x-show="currentLang === 'ml'" x-cloak>{{ $siteNameMl }}</span>
+                    <span class="text-sm md:text-base lg:text-lg font-bold leading-tight line-clamp-2 max-w-[150px] sm:max-w-[250px] md:max-w-[300px] lg:max-w-[350px] xl:max-w-[400px]" style="color: var(--header-text)">
+                        <span x-show="currentLang === 'en'">{!! str_replace('Police ', 'Police<br>', $siteName) !!}</span>
+                        <span x-show="currentLang === 'ml'" x-cloak>{!! str_replace('പോലീസ് ', 'പോലീസ്<br>', $siteNameMl) !!}</span>
                     </span>
                 </a>
             </div>
 
             <!-- Desktop Menu -->
-            <div class="hidden md:flex space-x-6 lg:space-x-8 items-center h-full">
+            <div class="hidden lg:flex space-x-4 xl:space-x-8 items-center h-full">
                 @php
                     $navItems = $headerMenu->count() > 0 ? $headerMenu : $pages->map(function($p) {
                         return (object)[
@@ -204,8 +204,8 @@
 
             <!-- Language Toggle & Admin Button -->
             <div class="flex items-center space-x-2 md:space-x-4">
-                 <button @click="currentLang = (currentLang === 'ml' ? 'en' : 'ml')" class="px-2 py-1.5 md:px-3 md:py-2 text-[10px] md:text-sm font-semibold rounded-lg border border-gray-200 hover:bg-gray-50 transition shadow-sm text-gray-700 bg-white flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg>
+                 <button @click="currentLang = (currentLang === 'ml' ? 'en' : 'ml')" class="admin-btn px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-sm font-semibold rounded-lg shadow-lg flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                     <span x-text="currentLang === 'ml' ? 'English' : 'മലയാളം'"></span>
                  </button>
                  <a href="/admin" class="admin-btn px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-sm font-semibold rounded-lg shadow-lg">
@@ -223,7 +223,7 @@
                  x-transition:leave="transition ease-in duration-150"
                  x-transition:leave-start="opacity-100 translate-x-0"
                  x-transition:leave-end="opacity-0 -translate-x-full"
-                 class="fixed inset-0 z-50 md:hidden overflow-y-auto bg-white p-6 shadow-2xl w-3/4 max-w-sm"
+                 class="fixed inset-0 z-50 lg:hidden overflow-y-auto bg-white p-6 shadow-2xl w-3/4 max-w-sm"
                  @click.away="mobileMenuOpen = false">
                 <div class="flex items-center justify-between mb-8">
                     @if($siteLogo)

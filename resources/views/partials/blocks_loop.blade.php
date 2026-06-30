@@ -96,10 +96,10 @@
                 @php
                     $heroImage = $block['data']['background_image'] ?? $block['data']['image'] ?? null;
                 @endphp
-                <section class="relative min-h-[350px] md:h-[450px] flex items-center justify-center bg-blue-900 overflow-hidden">
+                <section class="relative min-h-[350px] md:h-[450px] flex items-center justify-center bg-gray-50 overflow-hidden">
                     @if($heroImage)
                         <img src="{{ media_url($heroImage) }}" 
-                             class="absolute inset-0 w-full h-full object-cover opacity-60" 
+                             class="absolute inset-0 w-full h-full object-cover" 
                              alt="{{ $block['data']['heading'] ?? 'Hero Image' }}">
                     @endif
                     <div class="relative z-10 {{ $block['data']['heading_alignment'] ?? 'text-center' }} px-6 md:px-12 py-12 md:py-20 max-w-5xl mx-auto">
@@ -111,12 +111,26 @@
                             <span x-show="currentLang === 'en'">{{ $block['data']['subheading'] ?? '' }}</span>
                             <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['subheading_ml'] ?? $block['data']['subheading'] ?? '' }}</span>
                         </p>
+                        @if(!empty($block['data']['content']) || !empty($block['data']['content_ml']))
+                            <div class="mt-8 prose prose-invert prose-lg max-w-4xl mx-auto text-left drop-shadow-sm prose-strong:text-inherit prose-em:text-inherit">
+                                @if(!empty($block['data']['content_ml']))
+                                    <div lang="ml" x-show="currentLang === 'ml'" x-cloak>
+                                        {!! parse_tiptap_html(is_string($block['data']['content_ml']) ? $block['data']['content_ml'] : tiptap_converter()->asHTML($block['data']['content_ml'])) !!}
+                                    </div>
+                                @endif
+                                @if(!empty($block['data']['content']))
+                                    <div lang="en" x-show="currentLang === 'en'" x-cloak>
+                                        {!! parse_tiptap_html(is_string($block['data']['content']) ? $block['data']['content'] : tiptap_converter()->asHTML($block['data']['content'])) !!}
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </section>
                 @break
 
              @case('rich_text')
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 prose prose-sm sm:prose-base md:prose-lg lg:prose-xl prose-blue max-w-none prose-img:rounded-xl prose-img:shadow-lg leading-relaxed md:leading-loose" style="color: {{ $block['data']['text_color'] ?? '#111827' }}">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 prose prose-sm sm:prose-base md:prose-lg lg:prose-xl prose-blue max-w-none prose-img:rounded-xl prose-img:shadow-lg leading-relaxed md:leading-loose prose-strong:text-inherit prose-em:text-inherit" style="color: {{ $block['data']['text_color'] ?? '#111827' }}">
                     @if(!empty($block['data']['content_ml']))
                         <div lang="ml" x-show="currentLang === 'ml'" x-cloak>
                             {!! parse_tiptap_html(is_string($block['data']['content_ml']) ? $block['data']['content_ml'] : tiptap_converter()->asHTML($block['data']['content_ml'])) !!}
@@ -209,39 +223,73 @@
                                 '4' => 'grid-cols-2 md:grid-cols-4',
                             ][$cols] ?? 'grid-cols-2 md:grid-cols-3';
                         @endphp
-                        <div class="grid {{ $gridClass }} gap-8">
-                            @php 
-                                $galleryImages = collect($block['data']['images'] ?? [])->map(function($item) {
-                                    $imagePath = \Illuminate\Support\Arr::first((array)($item['image'] ?? ''));
-                                    return [
-                                        'src' => $imagePath ? media_url($imagePath) : '',
-                                        'type' => 'image',
-                                        'title' => $item['label'] ?? ''
-                                    ];
-                                })->values()->toArray();
-                            @endphp
-                            @foreach($block['data']['images'] as $index => $item)
-                                <div class="space-y-4">
-                                    @php $imagePath = is_array($item) ? ($item['image'] ?? '') : $item; @endphp
-                                    <div class="group relative aspect-square overflow-hidden rounded-2xl shadow-sm border border-gray-100 cursor-pointer bg-white flex items-center justify-center p-2"
-                                         onclick='openLightbox({{ json_encode($galleryImages) }}, {{ $index }})'>
-                                        <img src="{{ media_url(\Illuminate\Support\Arr::first((array)($imagePath ?? ''))) }}" loading="lazy" 
-                                             class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" 
-                                             alt="{{ $item['label'] ?? 'Gallery image' }}">
-                                        <div class="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/10 transition-colors duration-500 flex items-center justify-center">
-                                            <svg class="h-10 w-10 text-white opacity-0 group-hover:opacity-100 transition-opacity transform scale-50 group-hover:scale-100 duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                                            </svg>
-                                        </div>
+                        <div class="w-full overflow-hidden py-4">
+                                @php 
+                                    $galleryImages = collect($block['data']['images'] ?? [])->map(function($item) {
+                                        $imagePath = \Illuminate\Support\Arr::first((array)($item['image'] ?? ''));
+                                        return [
+                                            'src' => $imagePath ? media_url($imagePath) : '',
+                                            'type' => 'image',
+                                            'title' => $item['label'] ?? ''
+                                        ];
+                                    })->values()->toArray();
+                                    $enableMarquee = $block['data']['enable_marquee'] ?? true;
+                                @endphp
+                                @if($enableMarquee)
+                                    <div class="flex items-stretch w-max min-w-full animate-marquee hover:pause-marquee" style="animation-duration: 30s;">
+                                        @for($i = 0; $i < 2; $i++)
+                                            <div class="flex items-stretch gap-8 px-4 flex-shrink-0">
+                                                @foreach($block['data']['images'] as $index => $item)
+                                                    <div class="w-64 md:w-80 flex flex-col space-y-4">
+                                                        @php $imagePath = is_array($item) ? ($item['image'] ?? '') : $item; @endphp
+                                                        <div class="group relative aspect-[3/4] overflow-hidden rounded-2xl shadow-sm border border-gray-100 cursor-pointer bg-white flex items-center justify-center p-2 flex-grow"
+                                                             onclick='openLightbox({{ json_encode($galleryImages) }}, {{ $index }})'>
+                                                            <img src="{{ media_url(\Illuminate\Support\Arr::first((array)($imagePath ?? ''))) }}" loading="lazy" 
+                                                                 class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" 
+                                                                 alt="{{ $item['label'] ?? 'Gallery image' }}">
+                                                            <div class="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/10 transition-colors duration-500 flex items-center justify-center">
+                                                                <svg class="h-10 w-10 text-white opacity-0 group-hover:opacity-100 transition-opacity transform scale-50 group-hover:scale-100 duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                        @if(!empty($item['label']))
+                                                            <p class="text-sm font-semibold text-gray-700 text-center">
+                                                                <span x-show="currentLang === 'en'">{{ $item['label'] }}</span>
+                                                                <span x-show="currentLang === 'ml'" x-cloak>{{ $item['label_ml'] ?? $item['label'] }}</span>
+                                                            </p>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endfor
                                     </div>
-                                    @if(!empty($item['label']))
-                                        <p class="text-sm font-semibold text-gray-700 text-center">
-                                            <span x-show="currentLang === 'en'">{{ $item['label'] }}</span>
-                                            <span x-show="currentLang === 'ml'" x-cloak>{{ $item['label_ml'] ?? $item['label'] }}</span>
-                                        </p>
-                                    @endif
-                                </div>
-                            @endforeach
+                                @else
+                                    <div class="grid {{ $gridClass }} gap-8 px-4">
+                                        @foreach($block['data']['images'] as $index => $item)
+                                            <div class="flex flex-col space-y-4">
+                                                @php $imagePath = is_array($item) ? ($item['image'] ?? '') : $item; @endphp
+                                                <div class="group relative aspect-[3/4] overflow-hidden rounded-2xl shadow-sm border border-gray-100 cursor-pointer bg-white flex items-center justify-center p-2 flex-grow"
+                                                     onclick='openLightbox({{ json_encode($galleryImages) }}, {{ $index }})'>
+                                                    <img src="{{ media_url(\Illuminate\Support\Arr::first((array)($imagePath ?? ''))) }}" loading="lazy" 
+                                                         class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" 
+                                                         alt="{{ $item['label'] ?? 'Gallery image' }}">
+                                                    <div class="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/10 transition-colors duration-500 flex items-center justify-center">
+                                                        <svg class="h-10 w-10 text-white opacity-0 group-hover:opacity-100 transition-opacity transform scale-50 group-hover:scale-100 duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                @if(!empty($item['label']))
+                                                    <p class="text-sm font-semibold text-gray-700 text-center">
+                                                        <span x-show="currentLang === 'en'">{{ $item['label'] }}</span>
+                                                        <span x-show="currentLang === 'ml'" x-cloak>{{ $item['label_ml'] ?? $item['label'] }}</span>
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
                         </div>
                     </div>
                 @endif
@@ -322,7 +370,7 @@
                         'w-2/3' => 'sm:w-1/3',
                         'w-3/4' => 'sm:w-1/4',
                     ];
-                    $textWidth = $hasImage ? ($textWidthMap[$imageWidth] ?? 'sm:w-1/2') : 'w-full text-center max-w-4xl mx-auto';
+                    $textWidth = $hasImage ? ($textWidthMap[$imageWidth] ?? 'sm:w-1/2') : 'w-full max-w-4xl mx-auto';
                     $flexClasses = $hasImage ? (($block['data']['image_position'] ?? 'right') == 'left' ? 'sm:flex-row-reverse' : 'sm:flex-row') : 'justify-center';
                 @endphp
                 <section id="{{ $block['data']['anchor_id'] ?? '' }}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
@@ -335,7 +383,7 @@
                                     <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-600 rounded-full"></div>
                                 </h2>
                             @endif
-                            <div class="prose prose-sm md:prose-base prose-blue max-w-none prose-p:my-2 prose-headings:my-2 {{ $hasImage ? '' : 'mx-auto' }}" style="color: {{ $block['data']['text_color'] ?? '#374151' }}; {{ $hasImage ? '' : ($block['data']['heading_alignment'] === 'text-center' ? 'text-align: center;' : '') }}">
+                            <div class="prose prose-sm md:prose-base prose-blue max-w-none prose-p:my-2 prose-headings:my-2 prose-strong:text-inherit prose-em:text-inherit {{ $hasImage ? '' : 'mx-auto' }}" style="color: {{ $block['data']['text_color'] ?? '#374151' }}; {{ $hasImage ? '' : (($block['data']['heading_alignment'] ?? '') === 'text-center' ? 'text-align: center;' : '') }}">
                                 @if(!empty($block['data']['content_ml']))
                                     <div lang="ml" x-show="currentLang === 'ml'" x-cloak>
                                         {!! parse_tiptap_html(is_string($block['data']['content_ml']) ? $block['data']['content_ml'] : tiptap_converter()->asHTML($block['data']['content_ml'])) !!}
@@ -674,6 +722,60 @@
                             </button>
                         </div>
                     </form>
+                </section>
+            @case('team_members')
+                <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gray-50">
+                    @if(!empty($block['data']['heading']) || !empty($block['data']['heading_ml']))
+                    <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-16">
+                        <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative text-blue-900">
+                            <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? '' }}</span>
+                            <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? '' }}</span>
+                            <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-500 rounded-full"></div>
+                        </h2>
+                    </div>
+                    @endif
+                    
+                    @php
+                        $cols = $block['data']['columns'] ?? '3';
+                        $gridClass = match((string)$cols) {
+                            '2' => 'grid-cols-1 md:grid-cols-2',
+                            '3' => 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+                            '4' => 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+                            default => 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                        };
+                    @endphp
+                    
+                    @if(isset($block['data']['members']) && is_array($block['data']['members']))
+                        <div class="grid {{ $gridClass }} gap-10">
+                            @foreach($block['data']['members'] as $member)
+                                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                                    @if(!empty($member['image']))
+                                        <div class="aspect-square w-full relative">
+                                            <img src="{{ media_url($member['image']) }}" alt="{{ $member['name'] ?? 'Team Member' }}" class="absolute inset-0 w-full h-full object-cover object-top" loading="lazy">
+                                        </div>
+                                    @endif
+                                    <div class="p-6 text-center">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-1">
+                                            <span x-show="currentLang === 'en'">{{ $member['name'] ?? '' }}</span>
+                                            <span x-show="currentLang === 'ml'" x-cloak>{{ $member['name_ml'] ?? $member['name'] ?? '' }}</span>
+                                        </h3>
+                                        @if(!empty($member['designation']) || !empty($member['designation_ml']))
+                                        <p class="text-blue-600 font-semibold mb-3">
+                                            <span x-show="currentLang === 'en'">{{ $member['designation'] ?? '' }}</span>
+                                            <span x-show="currentLang === 'ml'" x-cloak>{{ $member['designation_ml'] ?? $member['designation'] ?? '' }}</span>
+                                        </p>
+                                        @endif
+                                        @if(!empty($member['extra_details']) || !empty($member['extra_details_ml']))
+                                        <p class="text-gray-500 text-sm">
+                                            <span x-show="currentLang === 'en'">{{ $member['extra_details'] ?? '' }}</span>
+                                            <span x-show="currentLang === 'ml'" x-cloak>{{ $member['extra_details_ml'] ?? $member['extra_details'] ?? '' }}</span>
+                                        </p>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </section>
                 @break
 

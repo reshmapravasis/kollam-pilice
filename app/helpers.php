@@ -15,7 +15,7 @@ if (!function_exists('media_url')) {
         $path = preg_replace('#^media/#', '', $path);
         $path = preg_replace('#^storage/#', '', $path);
 
-        return asset('storage/' . $path);
+        return rtrim(env('APP_URL', asset('')), '/') . '/storage/' . $path;
     }
 }
 
