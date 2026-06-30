@@ -57,7 +57,7 @@
             --header-bg: {{ $headerBgColor }};
             --header-text: {{ $headerTextColor }};
             --top-bar-bg: {{ $topBarBgColor }};
-            --top_bar_text: {{ $topBarTextColor }};
+            --top-bar-text: {{ $topBarTextColor }};
             --header-bg-image: url('{{ $headerBgImage ? media_url($headerBgImage) : "" }}');
         }
 
@@ -419,7 +419,7 @@
                 <div>
                     <h4 class="text-white font-bold mb-6 text-lg">
                         <span x-show="currentLang === 'en'">Our Location</span>
-                        <span x-show="currentLang === 'ml'" x-cloak>ഞങ്ങളുടെ സ്ഥാനം</span>
+                        <span x-show="currentLang === 'ml'" x-cloak>ലൊക്കേഷൻ</span>
                     </h4>
                     @php
                         $mapIframe = \App\Models\Setting::get('google_maps_iframe');
@@ -448,14 +448,14 @@
                 </div>
             </div>
 
-            <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-500">
-                <p class="text-xs md:text-sm text-center md:text-left">
+            <div class="pt-8 border-t border-gray-800 flex justify-center items-center text-gray-500">
+                <p class="text-xs md:text-sm text-center">
                     &copy; {{ date('Y') }} 
                     <span x-show="currentLang === 'en'">{{ $siteName }}</span>
                     <span x-show="currentLang === 'ml'" x-cloak>{{ $siteNameMl }}</span>. All rights reserved.
-                </p>
-                <p class="text-[10px] md:text-xs">
-                    Professional CMS Development
+                    <span class="mx-2 hidden sm:inline">|</span>
+                    <br class="sm:hidden">
+                    Powered by <a href="https://pravasisit.com" target="_blank" class="hover:text-white transition-colors">Pravasis IT Solutions</a>
                 </p>
             </div>
         </div>

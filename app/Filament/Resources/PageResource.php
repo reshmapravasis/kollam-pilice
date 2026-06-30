@@ -444,6 +444,11 @@ class PageResource extends Resource
                                                     Forms\Components\Select::make('heading_alignment')
                                                         ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
                                                         ->default('text-center'),
+                                                    Forms\Components\Grid::make(2)->schema([
+                                                        Forms\Components\TextInput::make('button_text')->label('Button Text (English)')->default('Send Message'),
+                                                        Forms\Components\TextInput::make('button_text_ml')->label('Button Text (Malayalam)')->default('സന്ദേശം അയക്കുക'),
+                                                    ])->columnSpanFull(),
+                                                    Forms\Components\ColorPicker::make('button_color')->label('Button Color')->default('#2563eb'),
                                                 ]),
                                             ]),
 

@@ -654,12 +654,27 @@
                         </p>
                     </div>
 
-                    @if(session('success'))
+                    @if(session('success_en'))
                         <div class="mb-8 p-6 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center gap-4 text-emerald-800 animate-in fade-in slide-in-from-top duration-500">
-                            <div class="p-2 bg-emerald-500 rounded-full text-white">
+                            <div class="p-2 bg-emerald-500 rounded-full text-white shrink-0">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             </div>
-                            <p class="font-semibold">{{ session('success') }}</p>
+                            <p class="font-semibold">
+                                <span x-show="currentLang === 'en'">{{ session('success_en') }}</span>
+                                <span x-show="currentLang === 'ml'" x-cloak>{{ session('success_ml') }}</span>
+                            </p>
+                        </div>
+                    @endif
+
+                    @if(session('error_en'))
+                        <div class="mb-8 p-6 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-4 text-red-800 animate-in fade-in slide-in-from-top duration-500">
+                            <div class="p-2 bg-red-500 rounded-full text-white shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            </div>
+                            <p class="font-semibold">
+                                <span x-show="currentLang === 'en'">{{ session('error_en') }}</span>
+                                <span x-show="currentLang === 'ml'" x-cloak>{{ session('error_ml') }}</span>
+                            </p>
                         </div>
                     @endif
 
@@ -716,13 +731,19 @@
                         </div>
 
                         <div class="md:col-span-2 pt-4">
-                            <button type="submit" class="admin-btn w-full md:w-auto px-10 py-5 text-white font-black rounded-xl md:rounded-2xl transition-all duration-300 shadow-xl shadow-blue-500/30 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
-                                Send Message
+                            @php
+                                $btnColor = $block['data']['button_color'] ?? \App\Models\Setting::get('admin_btn_color', '#2563eb');
+                            @endphp
+                            <button type="submit" style="background-color: {{ $btnColor }}" class="w-full md:w-auto px-10 py-5 text-white font-black rounded-xl md:rounded-2xl transition-all duration-300 shadow-xl shadow-blue-500/30 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
+                                <span x-show="currentLang === 'en'">{{ $block['data']['button_text'] ?? 'Send Message' }}</span>
+                                <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['button_text_ml'] ?? $block['data']['button_text'] ?? 'സന്ദേശം അയക്കുക' }}</span>
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                             </button>
                         </div>
                     </form>
                 </section>
+                @break
+
             @case('team_members')
                 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gray-50">
                     @if(!empty($block['data']['heading']) || !empty($block['data']['heading_ml']))
