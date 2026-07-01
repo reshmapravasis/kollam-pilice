@@ -81,10 +81,15 @@
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
+        @keyframes marquee-reverse {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
         .animate-marquee-normal { animation: marquee 30s linear infinite; }
         .animate-marquee-slow { animation: marquee 60s linear infinite; }
         .animate-marquee-fast { animation: marquee 15s linear infinite; }
         .animate-marquee { animation: marquee linear infinite; }
+        .animate-marquee-reverse { animation: marquee-reverse linear infinite; }
         .pause-marquee:hover { animation-play-state: paused; }
 
         .marquee-shadow { text-shadow: 0 4px 6px rgba(0,0,0,0.1); }

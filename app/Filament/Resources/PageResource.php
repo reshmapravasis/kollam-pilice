@@ -98,6 +98,12 @@ class PageResource extends Resource
                                                              ->numeric()
                                                              ->default(40)
                                                              ->helperText('Lower is slower, higher is faster (default: 40)'),
+                                                         Forms\Components\Select::make('direction')
+                                                             ->options([
+                                                                 '' => 'Right to Left (Default)',
+                                                                 'reverse' => 'Left to Right',
+                                                             ])
+                                                             ->default(''),
                                                          Forms\Components\TextInput::make('gap')
                                                              ->default('5rem')
                                                              ->helperText('Gap between items (e.g., 5rem, 50px)'),
@@ -386,7 +392,14 @@ class PageResource extends Resource
                                                 ])->columnSpanFull(),
                                                 Forms\Components\Repeater::make('items')
                                                     ->schema([
-                                                        Forms\Components\TextInput::make('title'),
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            Forms\Components\TextInput::make('title')->label('Title (English)')->required(),
+                                                            Forms\Components\TextInput::make('title_ml')->label('Title (Malayalam)'),
+                                                        ])->columnSpanFull(),
+                                                        Forms\Components\Grid::make(2)->schema([
+                                                            Forms\Components\ColorPicker::make('title_color')->label('Title Color 1')->default('#111827'),
+                                                            Forms\Components\ColorPicker::make('title_color_2')->label('Title Color 2 (Gradient)')->helperText('Leave empty for solid color'),
+                                                        ]),
                                                         Forms\Components\Grid::make(2)->schema([
                                                             TiptapEditor::make('description_ml')->label('Malayalam Description')->output(TiptapOutput::Html),
                                                             TiptapEditor::make('description')->label('English Description')->output(TiptapOutput::Html),
@@ -506,6 +519,7 @@ class PageResource extends Resource
                                                     Forms\Components\Select::make('heading_alignment')
                                                         ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
                                                         ->default('text-center'),
+                                                    Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
                                                 ]),
                                                 Forms\Components\Select::make('columns')
                                                     ->options([
@@ -516,6 +530,13 @@ class PageResource extends Resource
                                                 Forms\Components\Toggle::make('enable_marquee')
                                                     ->label('Enable Moving Effect (Marquee)')
                                                     ->default(true),
+                                                Forms\Components\Select::make('marquee_direction')
+                                                    ->label('Movement Direction')
+                                                    ->options([
+                                                        '' => 'Right to Left (Default)',
+                                                        'reverse' => 'Left to Right',
+                                                    ])
+                                                    ->default(''),
                                                 Forms\Components\Repeater::make('images')
                                                     ->schema([
                                                         Forms\Components\FileUpload::make('image')
@@ -539,6 +560,8 @@ class PageResource extends Resource
                                                     Forms\Components\Select::make('heading_alignment')
                                                         ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
                                                         ->default('text-center'),
+                                                    Forms\Components\ColorPicker::make('member_name_color')->label('Name Color')->default('#111827'),
+                                                    Forms\Components\ColorPicker::make('member_details_color')->label('Details Color')->default('#4b5563'),
                                                 ]),
                                                 Forms\Components\Select::make('columns')
                                                     ->options([

@@ -104,7 +104,8 @@ class MenuResource extends Resource
                         ->dehydrateStateUsing(fn ($state, Forms\Get $get) => $state ?: \App\Models\Page::find($get('page_id'))?->title_ml ?: \App\Models\Page::find($get('page_id'))?->title ?? 'Untitled')
                         ->maxLength(255),
                 ]),
-                Forms\Components\Hidden::make('url')
+                Forms\Components\TextInput::make('url')
+                    ->label('URL (You can add #anchor here, e.g. /services#loans)')
                     ->required(),
                 Forms\Components\Select::make('parent_id')
                     ->label('Parent Item')

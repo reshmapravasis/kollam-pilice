@@ -38,7 +38,8 @@
                     $isNumericSpeed = is_numeric($speed);
                     $duration = $isNumericSpeed ? (1200 / max($speed, 1)) : 30;
                     
-                    $animationClass = 'animate-marquee';
+                    $direction = $block['data']['direction'] ?? '';
+                    $animationClass = $direction === 'reverse' ? 'animate-marquee-reverse' : 'animate-marquee';
                     if (!$isNumericSpeed && str_contains($speed, 'animate-marquee')) {
                         $animationClass = $speed;
                     }
@@ -234,9 +235,11 @@
                                         ];
                                     })->values()->toArray();
                                     $enableMarquee = $block['data']['enable_marquee'] ?? true;
+                                    $marqueeDirection = $block['data']['marquee_direction'] ?? '';
+                                    $marqueeClass = $marqueeDirection === 'reverse' ? 'animate-marquee-reverse' : 'animate-marquee';
                                 @endphp
                                 @if($enableMarquee)
-                                    <div class="flex items-stretch w-max min-w-full animate-marquee hover:pause-marquee" style="animation-duration: 30s;">
+                                    <div class="flex items-stretch w-max min-w-full {{ $marqueeClass }} hover:pause-marquee" style="animation-duration: 30s;">
                                         @for($i = 0; $i < 2; $i++)
                                             <div class="flex items-stretch gap-8 px-4 flex-shrink-0">
                                                 @foreach($block['data']['images'] as $index => $item)
@@ -522,7 +525,14 @@
                                             </div>
                                         @endif
                                         @if(!empty($item['title']))
-                                            <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-blue-600 transition-colors">
+                                            @php
+                                                $c1 = $item['title_color'] ?? '#111827';
+                                                $c2 = $item['title_color_2'] ?? '';
+                                                $titleStyle = $c2
+                                                    ? "background: linear-gradient(135deg, {$c1}, {$c2}); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"
+                                                    : "color: {$c1};";
+                                            @endphp
+                                            <h3 class="text-lg md:text-xl font-bold mb-3 leading-tight transition-colors" style="{{ $titleStyle }}">
                                                 <span x-show="currentLang === 'en'">{{ $item['title'] }}</span>
                                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $item['title_ml'] ?? $item['title'] }}</span>
                                             </h3>
@@ -776,18 +786,18 @@
                                         </div>
                                     @endif
                                     <div class="p-6 text-center">
-                                        <h3 class="text-xl font-bold text-gray-900 mb-1">
+                                        <h3 class="text-xl font-bold mb-1" style="color: {{ $block['data']['member_name_color'] ?? '#111827' }}">
                                             <span x-show="currentLang === 'en'">{{ $member['name'] ?? '' }}</span>
                                             <span x-show="currentLang === 'ml'" x-cloak>{{ $member['name_ml'] ?? $member['name'] ?? '' }}</span>
                                         </h3>
                                         @if(!empty($member['designation']) || !empty($member['designation_ml']))
-                                        <p class="text-blue-600 font-semibold mb-3">
+                                        <p class="font-semibold mb-3" style="color: {{ $block['data']['member_details_color'] ?? '#2563eb' }}">
                                             <span x-show="currentLang === 'en'">{{ $member['designation'] ?? '' }}</span>
                                             <span x-show="currentLang === 'ml'" x-cloak>{{ $member['designation_ml'] ?? $member['designation'] ?? '' }}</span>
                                         </p>
                                         @endif
                                         @if(!empty($member['extra_details']) || !empty($member['extra_details_ml']))
-                                        <p class="text-gray-500 text-sm">
+                                        <p class="text-sm" style="color: {{ $block['data']['member_details_color'] ?? '#6b7280' }}">
                                             <span x-show="currentLang === 'en'">{{ $member['extra_details'] ?? '' }}</span>
                                             <span x-show="currentLang === 'ml'" x-cloak>{{ $member['extra_details_ml'] ?? $member['extra_details'] ?? '' }}</span>
                                         </p>
@@ -822,13 +832,13 @@
                 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                         @foreach($block['data']['items'] as $item)
-                            <div class="p-8 sm:p-12 md:p-16 rounded-3xl md:rounded-[2.5rem] shadow-xl text-center flex flex-col items-center justify-center transform hover:-translate-y-2 transition-all duration-700 overflow-hidden relative group min-h-[300px]" 
+                            <div class="p-6 sm:p-8 md:p-10 rounded-3xl shadow-xl text-center flex flex-col items-center justify-center transform hover:-translate-y-2 transition-all duration-700 overflow-hidden relative group min-h-[200px]" 
                                  style="background-color: {{ $item['bg_color'] ?? '#001a72' }}; color: {{ $item['text_color'] ?? '#ffffff' }};">
-                                <h2 class="text-2xl md:text-3xl lg:text-4xl font-extrabold mb-6 md:mb-8 uppercase tracking-widest leading-tight decoration-white/30">
+                                <h2 class="text-xl md:text-2xl lg:text-3xl font-extrabold mb-4 md:mb-6 uppercase tracking-widest leading-tight decoration-white/30">
                                     <span x-show="currentLang === 'en'">{{ $item['title'] }}</span>
                                     <span x-show="currentLang === 'ml'" x-cloak>{{ $item['title_ml'] ?? $item['title'] }}</span>
                                 </h2>
-                                <p class="text-base md:text-lg lg:text-xl leading-relaxed opacity-90 font-medium tracking-tight max-w-2xl">{{ $item['description'] }}</p>
+                                <p class="text-sm md:text-base lg:text-lg leading-relaxed opacity-90 font-medium tracking-tight max-w-2xl">{{ $item['description'] }}</p>
                             </div>
                         @endforeach
                     </div>
