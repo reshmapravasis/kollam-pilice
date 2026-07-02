@@ -42,6 +42,9 @@
     <style>
         [x-cloak] { display: none !important; }
         body { font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
+        /* Offset anchor targets so they don't hide behind the sticky header */
+        [id] { scroll-margin-top: 90px; }
         .prose ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin-bottom: 1rem !important; }
         .prose ol { list-style-type: decimal !important; padding-left: 1.5rem !important; margin-bottom: 1rem !important; }
         .prose li { margin-bottom: 0.5rem !important; }
