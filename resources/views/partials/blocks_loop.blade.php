@@ -131,17 +131,37 @@
                 @break
 
              @case('rich_text')
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 prose prose-sm sm:prose-base md:prose-lg lg:prose-xl prose-blue max-w-none prose-img:rounded-xl prose-img:shadow-lg leading-relaxed md:leading-loose prose-strong:text-inherit prose-em:text-inherit" style="color: {{ $block['data']['text_color'] ?? '#111827' }}">
-                    @if(!empty($block['data']['content_ml']))
-                        <div lang="ml" x-show="currentLang === 'ml'" x-cloak>
-                            {!! parse_tiptap_html(is_string($block['data']['content_ml']) ? $block['data']['content_ml'] : tiptap_converter()->asHTML($block['data']['content_ml'])) !!}
+                @php
+                    $anchorId = $block['data']['anchor_id'] ?? null;
+                @endphp
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16"
+                     @if($anchorId) id="{{ $anchorId }}" @endif>
+                    @php
+                        $heading = $block['data']['heading'] ?? $block['data']['title'] ?? null;
+                        $headingMl = $block['data']['heading_ml'] ?? $block['data']['title_ml'] ?? null;
+                        $hasHeading = !empty($heading) || !empty($headingMl);
+                    @endphp
+                    @if($hasHeading)
+                        <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-12">
+                            <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                                <span x-show="currentLang === 'en'">{{ $heading }}</span>
+                                <span x-show="currentLang === 'ml'" x-cloak>{{ $headingMl ?? $heading }}</span>
+                                <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-600 rounded-full"></div>
+                            </h2>
                         </div>
                     @endif
-                    @if(!empty($block['data']['content']))
-                        <div lang="en" x-show="currentLang === 'en'" x-cloak>
-                            {!! parse_tiptap_html(is_string($block['data']['content']) ? $block['data']['content'] : tiptap_converter()->asHTML($block['data']['content'])) !!}
-                        </div>
-                    @endif
+                    <div class="prose prose-sm sm:prose-base md:prose-lg lg:prose-xl prose-blue max-w-none prose-img:rounded-xl prose-img:shadow-lg leading-relaxed md:leading-loose prose-strong:text-inherit prose-em:text-inherit {{ $block['data']['text_size'] ?? 'text-base' }}" style="color: {{ $block['data']['text_color'] ?? '#111827' }}">
+                        @if(!empty($block['data']['content_ml']))
+                            <div lang="ml" x-show="currentLang === 'ml'" x-cloak>
+                                {!! parse_tiptap_html(is_string($block['data']['content_ml']) ? $block['data']['content_ml'] : tiptap_converter()->asHTML($block['data']['content_ml']), $block['data']['table_size'] ?? 'table-md') !!}
+                            </div>
+                        @endif
+                        @if(!empty($block['data']['content']))
+                            <div lang="en" x-show="currentLang === 'en'" x-cloak>
+                                {!! parse_tiptap_html(is_string($block['data']['content']) ? $block['data']['content'] : tiptap_converter()->asHTML($block['data']['content']), $block['data']['table_size'] ?? 'table-md') !!}
+                            </div>
+                        @endif
+                    </div>
                 </div>
                 @break
 
@@ -838,7 +858,10 @@
                                     <span x-show="currentLang === 'en'">{{ $item['title'] }}</span>
                                     <span x-show="currentLang === 'ml'" x-cloak>{{ $item['title_ml'] ?? $item['title'] }}</span>
                                 </h2>
-                                <p class="text-sm md:text-base lg:text-lg leading-relaxed opacity-90 font-medium tracking-tight max-w-2xl">{{ $item['description'] }}</p>
+                                <p class="text-sm md:text-base lg:text-lg leading-relaxed opacity-90 font-medium tracking-tight max-w-2xl">
+                                    <span x-show="currentLang === 'en'">{!! $item['description'] !!}</span>
+                                    <span x-show="currentLang === 'ml'" x-cloak>{!! $item['description_ml'] ?? $item['description'] !!}</span>
+                                </p>
                             </div>
                         @endforeach
                     </div>

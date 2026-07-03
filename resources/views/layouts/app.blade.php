@@ -51,6 +51,106 @@
         /* Allow parent block color to be inherited by all children, but inline styles will still win */
         .prose :where(p, h1, h2, h3, h4, li, strong) { color: inherit; }
 
+        /* Custom Responsive Table Wrapper inside Rich Text */
+        .prose .table-responsive {
+            display: block;
+            margin: 2rem auto;
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-collapse: separate;
+        }
+        
+        .prose .table-responsive table {
+            width: 100% !important;
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            margin: 0 !important;
+            table-layout: auto !important;
+        }
+
+        .prose .table-responsive th {
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
+            font-weight: 700 !important;
+            text-align: left !important;
+            border-top: 1px solid #e2e8f0 !important;
+            border-bottom: 2px solid #e2e8f0 !important;
+            border-right: 1px solid #e2e8f0 !important;
+            white-space: nowrap !important;
+        }
+
+        .prose .table-responsive th:first-child {
+            border-top-left-radius: 11px !important;
+        }
+
+        .prose .table-responsive th:last-child {
+            border-top-right-radius: 11px !important;
+        }
+
+        .prose .table-responsive td {
+            border-bottom: 1px solid #e2e8f0 !important;
+            border-right: 1px solid #e2e8f0 !important;
+            color: #475569 !important;
+            vertical-align: middle !important;
+        }
+
+        .prose .table-responsive th:last-child,
+        .prose .table-responsive td:last-child {
+            border-right: none !important;
+        }
+
+        .prose .table-responsive tr:last-child td {
+            border-bottom: none !important;
+        }
+
+        .prose .table-responsive tr:nth-child(even) {
+            background-color: #f8fafc !important;
+        }
+
+        .prose .table-responsive tr:hover {
+            background-color: #f1f5f9 !important;
+        }
+
+        .prose .table-responsive table p {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Table Sizes */
+        .prose .table-responsive.table-sm {
+            width: max-content !important;
+            max-width: 100% !important;
+            min-width: 40% !important;
+        }
+        .prose .table-responsive.table-sm th,
+        .prose .table-responsive.table-sm td {
+            padding: 6px 10px !important;
+            font-size: 0.75rem !important;
+        }
+
+        .prose .table-responsive.table-md {
+            width: max-content !important;
+            max-width: 100% !important;
+            min-width: 60% !important;
+        }
+        .prose .table-responsive.table-md th,
+        .prose .table-responsive.table-md td {
+            padding: 10px 16px !important;
+            font-size: 0.85rem !important;
+        }
+
+        .prose .table-responsive.table-lg {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        .prose .table-responsive.table-lg th,
+        .prose .table-responsive.table-lg td {
+            padding: 14px 20px !important;
+            font-size: 0.95rem !important;
+        }
+
         :root {
             --nav-color: {{ $navColor }};
             --nav-hover: {{ $navHoverColor }};
@@ -135,7 +235,7 @@
         </div>
 
         <!-- Navigation Bar -->
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 md:h-20 flex justify-between items-center relative">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 md:h-24 flex justify-between items-center relative">
             <!-- Mobile Menu Button -->
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden p-2 rounded-lg hover:bg-black/5" aria-label="Toggle menu">
                 <svg x-show="!mobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,12 +247,12 @@
             </button>
 
             <!-- Logo -->
-            <div class="flex items-center z-20 min-w-0 mr-2 md:mr-4">
-                <a href="/" class="flex items-center space-x-2 md:space-x-3 transition-transform hover:scale-[1.02] min-w-0">
+            <div class="flex items-center z-20 min-w-0 mr-4 md:mr-6">
+                <a href="/" class="flex items-center space-x-3 md:space-x-4 transition-transform hover:scale-[1.02] min-w-0">
                     @if($siteLogo)
-                        <img src="{{ media_url($siteLogo) }}" alt="{{ $siteName }}" class="h-8 w-auto md:h-10 flex-shrink-0">
+                        <img src="{{ media_url($siteLogo) }}" alt="{{ $siteName }}" class="h-10 w-auto md:h-12 flex-shrink-0">
                     @endif
-                    <span class="text-sm md:text-base lg:text-lg font-bold leading-tight line-clamp-2 max-w-[150px] sm:max-w-[250px] md:max-w-[300px] lg:max-w-[350px] xl:max-w-[400px]" style="color: var(--header-text)">
+                    <span class="text-sm md:text-base lg:text-lg font-bold leading-tight line-clamp-2 max-w-[180px] sm:max-w-[260px] md:max-w-[320px] lg:max-w-[380px] xl:max-w-[440px]" style="color: var(--header-text)">
                         <span x-show="currentLang === 'en'">{!! str_replace('Police ', 'Police<br>', $siteName) !!}</span>
                         <span x-show="currentLang === 'ml'" x-cloak>{!! str_replace('പോലീസ് ', 'പോലീസ്<br>', $siteNameMl) !!}</span>
                     </span>
@@ -160,7 +260,7 @@
             </div>
 
             <!-- Desktop Menu -->
-            <div class="hidden lg:flex space-x-4 xl:space-x-8 items-center h-full">
+            <div class="hidden lg:flex space-x-5 xl:space-x-10 items-center h-full">
                 @php
                     $navItems = $headerMenu->count() > 0 ? $headerMenu : $pages->map(function($p) {
                         return (object)[
@@ -183,13 +283,14 @@
                     
                     @if($hasChildren)
                         <div class="relative group h-full flex items-center">
-                            <button class="nav-link font-medium transition duration-150 py-2 flex items-center gap-1 {{ $isActive ? 'active' : '' }}">
+                            {{-- Parent label is a real link; chevron triggers the hover dropdown --}}
+                            <a href="{{ $item->url }}" class="nav-link font-medium transition duration-150 py-2 flex items-center gap-1 {{ $isActive ? 'active' : '' }}">
                                 <span x-show="currentLang === 'en'">{{ $item->label }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $item->label_ml ?? $item->label }}</span>
                                 <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
-                            </button>
+                            </a>
                             <div class="absolute left-0 top-[100%] w-48 bg-white border border-gray-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 py-2">
                                 @foreach($item->children as $child)
                                     <a href="{{ $child->url }}" 
@@ -211,12 +312,12 @@
             </div>
 
             <!-- Language Toggle & Admin Button -->
-            <div class="flex items-center space-x-2 md:space-x-4">
-                 <button @click="currentLang = (currentLang === 'ml' ? 'en' : 'ml')" class="admin-btn px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-sm font-semibold rounded-lg shadow-lg flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+            <div class="flex items-center space-x-2 md:space-x-3 flex-shrink-0">
+                 <button @click="currentLang = (currentLang === 'ml' ? 'en' : 'ml')" class="admin-btn px-3 py-2 md:px-4 md:py-2.5 text-xs md:text-sm font-semibold rounded-lg shadow-lg flex items-center gap-1.5 whitespace-nowrap">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                     <span x-text="currentLang === 'ml' ? 'English' : 'മലയാളം'"></span>
                  </button>
-                 <a href="/admin" class="admin-btn px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-sm font-semibold rounded-lg shadow-lg">
+                 <a href="/admin" class="admin-btn px-3 py-2 md:px-4 md:py-2.5 text-xs md:text-sm font-semibold rounded-lg shadow-lg whitespace-nowrap">
                     <span class="hidden sm:inline">Admin Panel</span>
                     <svg class="w-4 h-4 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15L12 9M15 12L9 12M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
@@ -248,14 +349,21 @@
                         @php $hasChildren = isset($item->children) && $item->children->count() > 0; @endphp
                         @if($hasChildren)
                             <div x-data="{ open: false }">
-                                <button @click="open = !open" class="flex items-center justify-between w-full text-lg font-semibold text-gray-900">
-                                    <span x-show="currentLang === 'en'">{{ $item->label }}</span>
-                                    <span x-show="currentLang === 'ml'" x-cloak>{{ $item->label_ml ?? $item->label }}</span>
-                                    <svg class="w-5 h-5 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                                </button>
+                                {{-- Row: label link + chevron toggle button --}}
+                                <div class="flex items-center justify-between w-full">
+                                    <a href="{{ $item->url }}" class="text-lg font-semibold text-gray-900 hover:text-blue-600 flex-1"
+                                       @click="mobileMenuOpen = false">
+                                        <span x-show="currentLang === 'en'">{{ $item->label }}</span>
+                                        <span x-show="currentLang === 'ml'" x-cloak>{{ $item->label_ml ?? $item->label }}</span>
+                                    </a>
+                                    <button @click="open = !open" class="p-1 ml-2 text-gray-500 hover:text-blue-600">
+                                        <svg class="w-5 h-5 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                    </button>
+                                </div>
                                 <div x-show="open" class="mt-2 pl-4 space-y-2 border-l-2 border-blue-50">
                                     @foreach($item->children as $child)
-                                        <a href="{{ $child->url }}" class="block text-gray-600 hover:text-blue-600 active:text-blue-600">
+                                        <a href="{{ $child->url }}" class="block text-gray-600 hover:text-blue-600 active:text-blue-600"
+                                           @click="mobileMenuOpen = false">
                                             <span x-show="currentLang === 'en'">{{ $child->label }}</span>
                                             <span x-show="currentLang === 'ml'" x-cloak>{{ $child->label_ml ?? $child->label }}</span>
                                         </a>

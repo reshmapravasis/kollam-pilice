@@ -137,8 +137,16 @@ class PageResource extends Resource
                                                      ]),
                                              ]),
                                         Forms\Components\Builder\Block::make('rich_text')
-                                            ->label(fn (?array $state) => '📝 Rich Text' . ($state ? ': ' . \Illuminate\Support\Str::limit(strip_tags($state['content'] ?? ''), 20) : ''))
+                                            ->label(fn (?array $state) => '📝 Rich Text' . ($state ? ': ' . ($state['title'] ?? $state['heading'] ?? \Illuminate\Support\Str::limit(strip_tags($state['content'] ?? ''), 20)) : ''))
                                             ->schema([
+                                                Forms\Components\Grid::make(2)->schema([
+                                                    Forms\Components\TextInput::make('heading')->label('Heading (English)'),
+                                                    Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)'),
+                                                ]),
+                                                Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
+                                                Forms\Components\Select::make('heading_alignment')
+                                                    ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
+                                                    ->default('text-center'),
                                                 Forms\Components\Grid::make(2)->schema([
                                                     TiptapEditor::make('content_ml')->label('Malayalam Content')->output(TiptapOutput::Html)->profile('default'),
                                                     TiptapEditor::make('content')->label('English Content')->output(TiptapOutput::Html)->profile('default'),
@@ -151,6 +159,19 @@ class PageResource extends Resource
                                                         'text-xl' => 'Large',
                                                     ])
                                                     ->default('text-base'),
+                                                Forms\Components\Select::make('table_size')
+                                                    ->label('Table Size (If Table Exists)')
+                                                    ->options([
+                                                        'table-sm' => 'Small Table',
+                                                        'table-md' => 'Medium Table',
+                                                        'table-lg' => 'Large Table (Full Width)',
+                                                    ])
+                                                    ->default('table-md'),
+                                                Forms\Components\TextInput::make('anchor_id')
+                                                    ->label('Anchor ID (for sub-menu links)')
+                                                    ->placeholder('e.g. loan-table')
+                                                    ->helperText('Set this to link to this section from sub-menus. Use lowercase with hyphens, no spaces.')
+                                                    ->alphaDash(),
                                             ]),
                                         Forms\Components\Builder\Block::make('button_link')
                                             ->label(fn (?array $state) => '🔘 Action Button' . ($state ? ': ' . ($state['button_text'] ?? '') : ''))

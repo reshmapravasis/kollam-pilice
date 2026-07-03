@@ -9,3 +9,67 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Custom Responsive Table Wrapper inside Rich Text content */
+.prose .table-responsive {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    margin: 2rem auto;
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.prose table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.prose th {
+    background-color: #f8fafc;
+    color: #1e293b;
+    font-weight: 700;
+    text-align: left;
+    padding: 8px 14px;
+    border-bottom: 2px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.prose th:last-child {
+    border-right: none;
+}
+
+.prose td {
+    padding: 8px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+    color: #475569;
+    font-size: 0.8rem;
+    vertical-align: middle;
+}
+
+.prose td:last-child {
+    border-right: none;
+}
+
+.prose tr:last-child td {
+    border-bottom: none;
+}
+
+.prose tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+.prose tr:hover {
+    background-color: #f1f5f9;
+}
+
+.prose table p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
