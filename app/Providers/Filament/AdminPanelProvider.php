@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\Setting;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -16,6 +17,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -26,10 +28,10 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->brandName(fn () => \App\Models\Setting::get('site_name', 'Pravasis IT Solution'))
-            ->brandLogo(fn () => ($logo = \App\Models\Setting::get('logo')) ? \Illuminate\Support\Facades\Storage::disk('public')->url($logo) : null)
+            ->brandName(fn () => Setting::get('site_name', 'Pravasis IT Solution'))
+            ->brandLogo(fn () => ($logo = Setting::get('logo')) ? Storage::disk('public')->url($logo) : null)
             ->brandLogoHeight('2.5rem')
-            ->favicon(fn () => ($icon = \App\Models\Setting::get('favicon')) ? \Illuminate\Support\Facades\Storage::disk('public')->url($icon) : null)
+            ->favicon(fn () => ($icon = Setting::get('favicon')) ? Storage::disk('public')->url($icon) : null)
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -61,6 +63,10 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 'panels::user-menu.before',
                 fn (): string => view('filament.header-timer'),
+            )
+            ->renderHook(
+                'panels::head.end',
+                fn (): string => '<style>.pdf-upload-field .filepond--item-panel { background-color: #09871f !important; } .pdf-upload-field .filepond--file-info { color: #ffffff !important; } .pdf-upload-field .filepond--file-action-button { color: #ffffff !important; }</style>',
             );
     }
 }

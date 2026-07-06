@@ -146,7 +146,7 @@
                             <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                 <span x-show="currentLang === 'en'">{{ $heading }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $headingMl ?? $heading }}</span>
-                                <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-600 rounded-full"></div>
+                                <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
                             </h2>
                         </div>
                     @endif
@@ -226,13 +226,13 @@
 
             @case('gallery')
                 @if(!empty($block['data']['images']))
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20" @if(!empty($block['data']['anchor_id'])) id="{{ $block['data']['anchor_id'] }}" @endif>
                         @if(!empty($block['data']['heading']))
                             <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-12">
                                 <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                     <span x-show="currentLang === 'en'">{{ $block['data']['heading'] }}</span>
                                     <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] }}</span>
-                                    <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-600 rounded-full"></div>
+                                    <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
                                 </h2>
                             </div>
                         @endif
@@ -403,7 +403,7 @@
                                 <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                     <span x-show="currentLang === 'en'">{{ $block['data']['heading'] }}</span>
                                     <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] }}</span>
-                                    <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-600 rounded-full"></div>
+                                    <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
                                 </h2>
                             @endif
                             <div class="prose prose-sm md:prose-base prose-blue max-w-none prose-p:my-2 prose-headings:my-2 prose-strong:text-inherit prose-em:text-inherit {{ $hasImage ? '' : 'mx-auto' }}" style="color: {{ $block['data']['text_color'] ?? '#374151' }}; {{ $hasImage ? '' : (($block['data']['heading_alignment'] ?? '') === 'text-center' ? 'text-align: center;' : '') }}">
@@ -450,7 +450,7 @@
                             <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                 <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? '' }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? '' }}</span>
-                                <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-600 rounded-full"></div>
+                                <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
                             </h2>
                             <div class="prose prose-sm md:prose-base prose-blue max-w-none prose-p:my-2 prose-headings:my-2" style="color: {{ $block['data']['text_color'] ?? '#374151' }}">
                                 @if(!empty($block['data']['content_ml']))
@@ -519,7 +519,7 @@
                         <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                             <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'Our Services' }}</span>
                             <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'നമ്മുടെ സേവനങ്ങൾ' }}</span>
-                            <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-600 rounded-full"></div>
+                            <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
                         </h2>
                         @if(!empty($block['data']['description']) || !empty($block['data']['description_ml']))
                             <div class="prose prose-sm md:prose-base prose-blue text-gray-600 max-w-3xl leading-relaxed">
@@ -583,7 +583,7 @@
                             <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                 <span x-show="currentLang === 'en'">{{ $block['data']['heading'] }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] }}</span>
-                                <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-600 rounded-full"></div>
+                                <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
                             </h2>
                         </div>
                     @endif
@@ -645,7 +645,7 @@
                             <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#ffffff' }}">
                                 <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'What Our Clients Say' }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'അവർ എന്താണ് പറയുന്നത്' }}</span>
-                                <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-500 rounded-full"></div>
+                                <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#3b82f6' }}"></div>
                             </h2>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -673,10 +673,10 @@
             @case('contact_form')
                 <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 bg-white rounded-[2rem] md:rounded-[3rem] shadow-2xl shadow-blue-900/5 mt-12 mb-12 border border-blue-50">
                     <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-12">
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8 inline-block relative">
+                        <h2 class="text-3xl md:text-4xl font-extrabold mb-8 inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                             <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'Contact Us' }}</span>
                             <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'ഞങ്ങളെ ബന്ധപ്പെടുക' }}</span>
-                            <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-600 rounded-full"></div>
+                            <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
                         </h2>
                         <p class="text-gray-500 text-lg max-w-2xl mx-auto">
                             <span x-show="currentLang === 'en'">{{ $block['data']['subheading'] ?? 'We would love to hear from you. Fill out the form below and we will get back to you soon.' }}</span>
@@ -781,7 +781,7 @@
                         <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative text-blue-900">
                             <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? '' }}</span>
                             <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? '' }}</span>
-                            <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-500 rounded-full"></div>
+                            <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#3b82f6' }}"></div>
                         </h2>
                     </div>
                     @endif
@@ -885,7 +885,7 @@
                             <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                 <span x-show="currentLang === 'en'">{{ $block['data']['heading'] }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] }}</span>
-                                <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-600 rounded-full"></div>
+                                <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
                             </h2>
                             @if(!empty($block['data']['subheading']))
                                 <p class="text-gray-500 max-w-2xl mx-auto text-lg">
@@ -939,7 +939,7 @@
                             <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8 tracking-tight inline-block relative">
                                 <span x-show="currentLang === 'en'">{{ $servicesBlock['data']['heading'] ?? 'Our Services' }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $servicesBlock['data']['heading_ml'] ?? $servicesBlock['data']['heading'] ?? 'നമ്മുടെ സേവനങ്ങൾ' }}</span>
-                                <div class="absolute -bottom-4 left-0 w-full h-1.5 bg-blue-600 rounded-full"></div>
+                                <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $servicesBlock['data']['underline_color'] ?? '#2563eb' }}"></div>
                             </h2>
                             @if(!empty($servicesBlock['data']['description']) || !empty($servicesBlock['data']['description_ml']))
                                 <div class="prose prose-sm md:prose-base prose-blue text-gray-600 max-w-3xl leading-relaxed">
@@ -982,6 +982,229 @@
                     </div>
                 </section>
                 @break
+
+        @case('application_forms')
+            @php
+                $afForms  = $block['data']['forms'] ?? [];
+                $afAnchor = $block['data']['anchor_id'] ?? '';
+            @endphp
+            <section id="{{ $afAnchor }}" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+                @if(!empty($block['data']['heading']) || !empty($block['data']['heading_ml']))
+                    <div class="{{ $block['data']['heading_alignment'] ?? 'text-left' }} mb-10">
+                        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight inline-block relative"
+                            style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                            <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'Application Forms' }}</span>
+                            <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'അപേക്ഷാ ഫോമുകൾ' }}</span>
+                            <div class="absolute -bottom-3 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
+                        </h2>
+                    </div>
+                @endif
+
+                @if(count($afForms) > 0)
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        @foreach($afForms as $index => $form)
+                            @php
+                                $pdfPath = is_array($form['file'] ?? '') ? reset($form['file']) : ($form['file'] ?? '');
+                                $isLast  = $index === count($afForms) - 1;
+                            @endphp
+                            <div class="group flex items-center gap-4 px-5 py-4 {{ !$isLast ? 'border-b border-gray-100' : '' }} hover:bg-blue-50 transition-colors duration-200">
+                                {{-- Serial number --}}
+                                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-700 text-sm font-bold flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors duration-200">
+                                    {{ $index + 1 }}
+                                </span>
+
+                                {{-- PDF Icon --}}
+                                <svg class="flex-shrink-0 w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8 13h1.5c1.1 0 1.75.6 1.75 1.5S10.6 16 9.5 16H8.5v1.5H8V13zm1.5 2.5c.55 0 .85-.25.85-.75s-.3-.75-.85-.75h-.5v1.5h.5zm2 .75c0-1 .7-1.75 1.75-1.75H15v.85h-1.5c-.6 0-.95.35-.95.9s.35.9.95.9H15V19h-1.5c-1.05 0-1.75-.75-1.75-1.75zm3.5-2.5h1c1.1 0 1.75.6 1.75 1.75v1c0 1.15-.65 1.75-1.75 1.75h-1V13zm.5 3.5h.5c.55 0 .85-.3.85-.75v-1c0-.45-.3-.75-.85-.75h-.5v2.5z"/>
+                                </svg>
+
+                                {{-- Title (clickable link to open PDF in new tab) --}}
+                                <div class="flex-1 min-w-0">
+                                    @if($pdfPath)
+                                        <a href="{{ media_url($pdfPath) }}"
+                                           target="_blank"
+                                           rel="noopener"
+                                           class="text-blue-700 font-semibold text-sm md:text-base hover:text-blue-900 hover:underline transition-colors leading-snug">
+                                            <span x-show="currentLang === 'en'">{{ $form['title'] ?? '' }}</span>
+                                            <span x-show="currentLang === 'ml'" x-cloak>{{ $form['title_ml'] ?? $form['title'] ?? '' }}</span>
+                                        </a>
+                                    @else
+                                        <span class="text-gray-700 font-semibold text-sm md:text-base">
+                                            <span x-show="currentLang === 'en'">{{ $form['title'] ?? '' }}</span>
+                                            <span x-show="currentLang === 'ml'" x-cloak>{{ $form['title_ml'] ?? $form['title'] ?? '' }}</span>
+                                        </span>
+                                    @endif
+                                    @if(!empty($form['description']) || !empty($form['description_ml']))
+                                        <p class="text-xs text-gray-400 mt-0.5">
+                                            <span x-show="currentLang === 'en'">{{ $form['description'] ?? '' }}</span>
+                                            <span x-show="currentLang === 'ml'" x-cloak>{{ $form['description_ml'] ?? $form['description'] ?? '' }}</span>
+                                        </p>
+                                    @endif
+                                </div>
+
+                                {{-- Open arrow icon --}}
+                                @if($pdfPath)
+                                    <a href="{{ media_url($pdfPath) }}"
+                                       target="_blank"
+                                       rel="noopener"
+                                       class="flex-shrink-0 p-2 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-100 transition-all"
+                                       title="Open PDF">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                        </svg>
+                                    </a>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-gray-400 italic text-sm">No forms available.</p>
+                @endif
+            </section>
+            @break
+
+
+
+        @case('schemes')
+            @php
+                $schItems = $block['data']['items'] ?? [];
+                $schCols  = $block['data']['columns'] ?? '3';
+                $schGrid  = match((string)$schCols) {
+                    '2' => 'md:grid-cols-2',
+                    '4' => 'md:grid-cols-2 lg:grid-cols-4',
+                    default => 'md:grid-cols-3',
+                };
+                $schAnchor = $block['data']['anchor_id'] ?? '';
+            @endphp
+            <section id="{{ $schAnchor }}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+                @if(!empty($block['data']['heading']) || !empty($block['data']['heading_ml']))
+                    <div class="{{ $block['data']['heading_alignment'] ?? 'text-left' }} mb-10">
+                        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight inline-block relative"
+                            style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                            <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'Schemes' }}</span>
+                            <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'പദ്ധതികൾ' }}</span>
+                            <div class="absolute -bottom-3 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
+                        </h2>
+                    </div>
+                @endif
+                <div class="grid grid-cols-1 sm:grid-cols-2 {{ $schGrid }} gap-6">
+                    @foreach($schItems as $item)
+                        @php $imgPath = is_array($item['image'] ?? '') ? reset($item['image']) : ($item['image'] ?? ''); @endphp
+                        <div class="group bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                            @if($imgPath)
+                                <div class="aspect-[4/3] overflow-hidden bg-gray-100">
+                                    <img src="{{ media_url($imgPath) }}"
+                                         loading="lazy"
+                                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                         alt="{{ $item['title'] ?? 'Scheme' }}">
+                                </div>
+                            @endif
+                            @if(!empty($item['title']) || !empty($item['title_ml']) || !empty($item['description']) || !empty($item['description_ml']))
+                                <div class="p-5">
+                                    @if(!empty($item['title']) || !empty($item['title_ml']))
+                                        <h3 class="font-bold text-gray-900 text-base mb-2 group-hover:text-blue-600 transition-colors">
+                                            <span x-show="currentLang === 'en'">{{ $item['title'] ?? '' }}</span>
+                                            <span x-show="currentLang === 'ml'" x-cloak>{{ $item['title_ml'] ?? $item['title'] ?? '' }}</span>
+                                        </h3>
+                                    @endif
+                                    @if(!empty($item['description']) || !empty($item['description_ml']))
+                                        <p class="text-sm text-gray-500 line-clamp-3">
+                                            <span x-show="currentLang === 'en'">{{ $item['description'] ?? '' }}</span>
+                                            <span x-show="currentLang === 'ml'" x-cloak>{{ $item['description_ml'] ?? $item['description'] ?? '' }}</span>
+                                        </p>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+            @break
+
+        @case('reports')
+            @php
+                $repItems  = $block['data']['items'] ?? [];
+                $repCols   = $block['data']['columns'] ?? '3';
+                $repGrid   = match((string)$repCols) {
+                    '2' => 'md:grid-cols-2',
+                    '4' => 'md:grid-cols-2 lg:grid-cols-4',
+                    default => 'md:grid-cols-3',
+                };
+                $repAnchor = $block['data']['anchor_id'] ?? '';
+                // Group by year for display
+                $repByYear = collect($repItems)->groupBy('year');
+            @endphp
+            <section id="{{ $repAnchor }}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+                @if(!empty($block['data']['heading']) || !empty($block['data']['heading_ml']))
+                    <div class="{{ $block['data']['heading_alignment'] ?? 'text-left' }} mb-10">
+                        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight inline-block relative"
+                            style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                            <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'Annual Reports' }}</span>
+                            <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'വാർഷിക റിപ്പോർട്ടുകൾ' }}</span>
+                            <div class="absolute -bottom-3 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
+                        </h2>
+                    </div>
+                @endif
+
+                @foreach($repByYear as $year => $yearItems)
+                    <div class="mb-10">
+                        {{-- Year header --}}
+                        <div class="flex items-center gap-3 mb-5">
+                            <span class="inline-flex items-center px-4 py-1.5 bg-blue-600 text-white text-sm font-bold rounded-full shadow">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                {{ $year }}
+                            </span>
+                            <div class="flex-1 h-px bg-gray-200"></div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 {{ $repGrid }} gap-6">
+                            @foreach($yearItems as $report)
+                                @php $pdfPath = is_array($report['file'] ?? '') ? reset($report['file']) : ($report['file'] ?? ''); @endphp
+                                <div class="group bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col">
+                                    <div class="flex items-start gap-4 mb-4">
+                                        <div class="flex-shrink-0 w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
+                                            <svg class="w-7 h-7 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 4h5v7h7v9H6V4zm3 9h1.5c1.1 0 1.75.6 1.75 1.5S11.6 16 10.5 16H9.5v1.5H9V13zm1.5 2.5c.55 0 .85-.25.85-.75s-.3-.75-.85-.75h-.5v1.5h.5zm2 .75c0-1 .7-1.75 1.75-1.75H15v.85h-1.5c-.6 0-.95.35-.95.9s.35.9.95.9H15V19h-1.5c-1.05 0-1.75-.75-1.75-1.75zm3.5-2.5h1c1.1 0 1.75.6 1.75 1.75v1c0 1.15-.65 1.75-1.75 1.75h-1V13zm.5 3.5h.5c.55 0 .85-.3.85-.75v-1c0-.45-.3-.75-.85-.75h-.5v2.5z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <h3 class="font-bold text-gray-900 text-base leading-snug group-hover:text-blue-600 transition-colors">
+                                                <span x-show="currentLang === 'en'">{{ $report['title'] ?? '' }}</span>
+                                                <span x-show="currentLang === 'ml'" x-cloak>{{ $report['title_ml'] ?? $report['title'] ?? '' }}</span>
+                                            </h3>
+                                            @if(!empty($report['description']) || !empty($report['description_ml']))
+                                                <p class="text-sm text-gray-500 mt-1 line-clamp-2">
+                                                    <span x-show="currentLang === 'en'">{{ $report['description'] ?? '' }}</span>
+                                                    <span x-show="currentLang === 'ml'" x-cloak>{{ $report['description_ml'] ?? $report['description'] ?? '' }}</span>
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="mt-auto pt-4 border-t border-gray-50">
+                                        @if($pdfPath)
+                                            <a href="{{ media_url($pdfPath) }}"
+                                               download
+                                               target="_blank"
+                                               class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-lg transition-all shadow-sm hover:shadow-md w-full justify-center">
+                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                                </svg>
+                                                <span x-show="currentLang === 'en'">{{ $report['button_text'] ?? 'Download Report' }}</span>
+                                                <span x-show="currentLang === 'ml'" x-cloak>{{ $report['button_text_ml'] ?? $report['button_text'] ?? 'റിപ്പോർട്ട് ഡൗൺലോഡ്' }}</span>
+                                            </a>
+                                        @else
+                                            <span class="text-xs text-gray-400 italic">No file uploaded</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </section>
+            @break
+
         @endswitch
     </div>
 @endforeach

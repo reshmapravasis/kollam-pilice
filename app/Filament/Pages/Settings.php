@@ -57,6 +57,8 @@ class Settings extends Page implements HasForms
             'top_bar_text_color' => Setting::get('top_bar_text_color', '#ffffff'),
             'header_bg_image' => Setting::get('header_bg_image'),
             'google_maps_iframe' => Setting::get('google_maps_iframe'),
+            'site_name_color' => Setting::get('site_name_color', '#111827'),
+            'site_name_hover_color' => Setting::get('site_name_hover_color', '#1f2937'),
         ];
         $this->form->fill($this->data);
     }
@@ -70,6 +72,10 @@ class Settings extends Page implements HasForms
                         Forms\Components\Grid::make(2)->schema([
                             TextInput::make('site_name')->label('Site Name (English)')->required(),
                             TextInput::make('site_name_ml')->label('Site Name (Malayalam)'),
+                            Forms\Components\ColorPicker::make('site_name_color')
+                                    ->label('Site Name Color'),
+                            Forms\Components\ColorPicker::make('site_name_hover_color')
+                                    ->label('Site Name Hover Color'),
                         ]),
                         Section::make('Brand Assets')
                             ->description('Upload your company identity files.')

@@ -10,6 +10,17 @@
 
     $headerMenu = \App\Models\Menu::getHeader();
     $footerMenu = \App\Models\Menu::getFooter();
+
+    $navItems = $headerMenu->count() > 0 ? $headerMenu : $pages->map(function($p) {
+        return (object)[
+            'label' => $p->title,
+            'label_ml' => $p->title_ml ?? $p->title,
+            'url' => route('page.show', $p->slug),
+            'children' => $p->children->map(function($c) {
+                return (object)['label' => $c->title, 'label_ml' => $c->title_ml ?? $c->title, 'url' => route('page.show', $c->slug)];
+            })
+        ];
+    });
     
     $navColor = \App\Models\Setting::get('nav_link_color', '#4b5563');
     $navHoverColor = \App\Models\Setting::get('nav_link_hover_color', '#2563eb');
@@ -22,6 +33,8 @@
     $topBarTextColor = \App\Models\Setting::get('top_bar_text_color', '#ffffff');
     $headerBgImage = \App\Models\Setting::get('header_bg_image');
     $favicon = \App\Models\Setting::get('favicon');
+    $siteNameColor = \App\Models\Setting::get('site_name_color', '#111827');
+    $siteNameHoverColor = \App\Models\Setting::get('site_name_hover_color', '#1f2937');
 @endphp
 
 <!DOCTYPE html>
@@ -162,7 +175,12 @@
             --top-bar-bg: {{ $topBarBgColor }};
             --top-bar-text: {{ $topBarTextColor }};
             --header-bg-image: url('{{ $headerBgImage ? media_url($headerBgImage) : "" }}');
+            --site-name-color: {{ $siteNameColor }};
+            --site-name-hover: {{ $siteNameHoverColor }};
         }
+
+        .site-name-text { color: var(--site-name-color); transition: color 0.3s ease; }
+        a:hover .site-name-text { color: var(--site-name-hover); }
 
         .nav-link { color: var(--nav-color); transition: color 0.3s ease; }
         .nav-link:hover { color: var(--nav-hover); }
@@ -201,7 +219,7 @@
     </style>
 </head>
 <body class="antialiased bg-gray-50 flex flex-col min-h-screen" x-data="{ mobileMenuOpen: false, currentLang: $persist('ml') }">
-    <header class="border-b border-gray-100 sticky top-0 z-50 bg-cover bg-center bg-no-repeat w-full" style="background-color: var(--header-bg); color: var(--header-text); @if($headerBgImage) background-image: var(--header-bg-image); @endif">
+    <header class="border-b border-gray-100 sticky top-0 z-50 bg-white w-full">
         <!-- Top Bar -->
         <div class="py-2 hidden sm:block" style="background-color: var(--top-bar-bg); color: var(--top-bar-text);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs md:text-sm">
@@ -235,7 +253,7 @@
         </div>
 
         <!-- Navigation Bar -->
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 md:h-24 flex justify-between items-center relative">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center relative">
             <!-- Mobile Menu Button -->
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden p-2 rounded-lg hover:bg-black/5" aria-label="Toggle menu">
                 <svg x-show="!mobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -250,65 +268,13 @@
             <div class="flex items-center z-20 min-w-0 mr-4 md:mr-6">
                 <a href="/" class="flex items-center space-x-3 md:space-x-4 transition-transform hover:scale-[1.02] min-w-0">
                     @if($siteLogo)
-                        <img src="{{ media_url($siteLogo) }}" alt="{{ $siteName }}" class="h-10 w-auto md:h-12 flex-shrink-0">
+                        <img src="{{ media_url($siteLogo) }}" alt="{{ $siteName }}" class="h-16 w-auto md:h-24 flex-shrink-0">
                     @endif
-                    <span class="text-sm md:text-base lg:text-lg font-bold leading-tight line-clamp-2 max-w-[180px] sm:max-w-[260px] md:max-w-[320px] lg:max-w-[380px] xl:max-w-[440px]" style="color: var(--header-text)">
-                        <span x-show="currentLang === 'en'">{!! str_replace('Police ', 'Police<br>', $siteName) !!}</span>
-                        <span x-show="currentLang === 'ml'" x-cloak>{!! str_replace('പോലീസ് ', 'പോലീസ്<br>', $siteNameMl) !!}</span>
+                    <span class="font-bold leading-tight flex-1 site-name-text">
+                        <span x-show="currentLang === 'en'" class="text-base md:text-lg lg:text-2xl">{{ $siteName }}</span>
+                        <span x-show="currentLang === 'ml'" class="text-base md:text-lg lg:text-xl xl:text-xl" x-cloak>{{ $siteNameMl }}</span>
                     </span>
                 </a>
-            </div>
-
-            <!-- Desktop Menu -->
-            <div class="hidden lg:flex space-x-5 xl:space-x-10 items-center h-full">
-                @php
-                    $navItems = $headerMenu->count() > 0 ? $headerMenu : $pages->map(function($p) {
-                        return (object)[
-                            'label' => $p->title,
-                            'label_ml' => $p->title_ml ?? $p->title,
-                            'url' => route('page.show', $p->slug),
-                            'children' => $p->children->map(function($c) {
-                                return (object)['label' => $c->title, 'label_ml' => $c->title_ml ?? $c->title, 'url' => route('page.show', $c->slug)];
-                            })
-                        ];
-                    });
-                @endphp
-
-                @foreach($navItems as $item)
-                    @php 
-                        $hasChildren = isset($item->children) && $item->children->count() > 0;
-                        $itemUrl = url($item->url);
-                        $isActive = request()->url() == $itemUrl || request()->is(ltrim(parse_url($itemUrl, PHP_URL_PATH), '/') . '/*');
-                    @endphp
-                    
-                    @if($hasChildren)
-                        <div class="relative group h-full flex items-center">
-                            {{-- Parent label is a real link; chevron triggers the hover dropdown --}}
-                            <a href="{{ $item->url }}" class="nav-link font-medium transition duration-150 py-2 flex items-center gap-1 {{ $isActive ? 'active' : '' }}">
-                                <span x-show="currentLang === 'en'">{{ $item->label }}</span>
-                                <span x-show="currentLang === 'ml'" x-cloak>{{ $item->label_ml ?? $item->label }}</span>
-                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </a>
-                            <div class="absolute left-0 top-[100%] w-48 bg-white border border-gray-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 py-2">
-                                @foreach($item->children as $child)
-                                    <a href="{{ $child->url }}" 
-                                       class="block px-4 py-2 text-sm text-black hover:bg-blue-50 hover:text-blue-600 transition">
-                                        <span x-show="currentLang === 'en'">{{ $child->label }}</span>
-                                        <span x-show="currentLang === 'ml'" x-cloak>{{ $child->label_ml ?? $child->label }}</span>
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-                    @else
-                        <a href="{{ $item->url }}" 
-                           class="nav-link font-medium transition duration-150 py-2 {{ $isActive ? 'active' : '' }}">
-                            <span x-show="currentLang === 'en'">{{ $item->label }}</span>
-                            <span x-show="currentLang === 'ml'" x-cloak>{{ $item->label_ml ?? $item->label }}</span>
-                        </a>
-                    @endif
-                @endforeach
             </div>
 
             <!-- Language Toggle & Admin Button -->
@@ -317,9 +283,11 @@
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                     <span x-text="currentLang === 'ml' ? 'English' : 'മലയാളം'"></span>
                  </button>
-                 <a href="/admin" class="admin-btn px-3 py-2 md:px-4 md:py-2.5 text-xs md:text-sm font-semibold rounded-lg shadow-lg whitespace-nowrap">
-                    <span class="hidden sm:inline">Admin Panel</span>
-                    <svg class="w-4 h-4 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15L12 9M15 12L9 12M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                 <a href="/admin" class="admin-btn p-2 md:p-2.5 rounded-lg shadow-lg flex items-center justify-center" title="Admin Panel" aria-label="Admin Panel">
+                    <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"/>
+                        <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z"/>
+                    </svg>
                 </a>
             </div>
 
@@ -396,7 +364,53 @@
             </div>
             <!-- Overlay -->
             <div x-show="mobileMenuOpen" x-cloak @click="mobileMenuOpen = false" class="fixed inset-0 bg-black/50 z-40 md:hidden" x-transition.opacity></div>
+        
         </nav>
+        
+        <!-- Extra Nav Header for Links -->
+        <div class="hidden lg:block border-t border-gray-100 shadow-sm relative z-40 bg-white" style="background-color: var(--header-bg); color: var(--header-text);">
+            <!-- Desktop Menu -->
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 hidden lg:flex space-x-6 xl:space-x-12 items-center justify-center py-0">
+                @foreach($navItems as $item)
+                    @php 
+                        $hasChildren = isset($item->children) && $item->children->count() > 0;
+                        $itemUrl = url($item->url);
+                        $isActive = request()->url() == $itemUrl || request()->is(ltrim(parse_url($itemUrl, PHP_URL_PATH), '/') . '/*');
+                    @endphp
+                    
+                    @if($hasChildren)
+                        <div class="relative group h-full flex items-center">
+                            {{-- Parent label is a real link; chevron triggers the hover dropdown --}}
+                            <a href="{{ $item->url }}" class="nav-link font-medium transition duration-150 py-2 flex items-center gap-1 {{ $isActive ? 'active' : '' }}">
+                                <span x-show="currentLang === 'en'">{{ $item->label }}</span>
+                                <span x-show="currentLang === 'ml'" x-cloak>{{ $item->label_ml ?? $item->label }}</span>
+                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </a>
+                            <div class="absolute left-0 top-[100%] w-48 bg-white border border-gray-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 py-2">
+                                @foreach($item->children as $child)
+                                    <a href="{{ $child->url }}" 
+                                       class="block px-4 py-2 text-sm text-black hover:bg-blue-50 hover:text-blue-600 transition">
+                                        <span x-show="currentLang === 'en'">{{ $child->label }}</span>
+                                        <span x-show="currentLang === 'ml'" x-cloak>{{ $child->label_ml ?? $child->label }}</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <a href="{{ $item->url }}" 
+                           class="nav-link font-medium transition duration-150 py-2 {{ $isActive ? 'active' : '' }}">
+                            <span x-show="currentLang === 'en'">{{ $item->label }}</span>
+                            <span x-show="currentLang === 'ml'" x-cloak>{{ $item->label_ml ?? $item->label }}</span>
+                        </a>
+                    @endif
+                @endforeach
+            </div>
+
+
+        </div>
+
     </header>
 
     <main>
