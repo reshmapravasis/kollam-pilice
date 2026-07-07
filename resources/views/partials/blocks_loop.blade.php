@@ -80,7 +80,13 @@
             @case('button_link')
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 {{ $block['data']['alignment'] ?? 'text-center' }}">
                     @if(!empty($block['data']['target_page']))
-                        <a href="{{ url($block['data']['target_page']) }}" 
+                        @php
+                            $targetUrl = url($block['data']['target_page']);
+                            if (!empty($block['data']['target_anchor'])) {
+                                $targetUrl .= '#' . ltrim($block['data']['target_anchor'], '#');
+                            }
+                        @endphp
+                        <a href="{{ $targetUrl }}" 
                            class="inline-flex items-center gap-2 px-8 py-4 font-bold rounded-2xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
                            style="background-color: {{ $block['data']['button_color'] ?? '#2563eb' }}; color: {{ $block['data']['text_color'] ?? '#ffffff' }};">
                             <span x-show="currentLang === 'en'">{{ $block['data']['button_text'] ?? 'Read More' }}</span>
@@ -424,7 +430,7 @@
                                 <div class="relative group w-full {{ $block['data']['aspect_ratio'] ?? 'aspect-auto' }} overflow-hidden rounded-2xl shadow-xl">
                                     <div class="absolute -inset-2 bg-gradient-to-r from-blue-600 to-teal-500 rounded-2xl opacity-10 group-hover:opacity-20 transition duration-500"></div>
                                     <img src="{{ media_url($block['data']['image']) }}" loading="lazy" 
-                                         class="relative w-full h-full object-cover">
+                                         class="relative w-full h-full object-contain">
                                 </div>
                             </div>
                         @endif

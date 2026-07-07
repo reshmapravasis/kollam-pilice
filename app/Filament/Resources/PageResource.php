@@ -193,6 +193,10 @@ class PageResource extends Resource
                                                         ->options(fn () => Page::where('is_published', true)->pluck('title', 'slug')->toArray())
                                                         ->searchable()
                                                         ->required(),
+                                                    Forms\Components\TextInput::make('target_anchor')
+                                                        ->label('Target Anchor ID (Optional)')
+                                                        ->placeholder('e.g. schemes')
+                                                        ->helperText('Will append #anchor to the target URL.'),
                                                     Forms\Components\Select::make('alignment')
                                                         ->options([
                                                             'text-left' => 'Left',

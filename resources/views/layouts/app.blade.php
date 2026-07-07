@@ -222,7 +222,7 @@
     <header class="border-b border-gray-100 sticky top-0 z-50 bg-white w-full">
         <!-- Top Bar -->
         <div class="py-2 hidden sm:block" style="background-color: var(--top-bar-bg); color: var(--top-bar-text);">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs md:text-sm">
+            <div class="w-[98%] max-w-[1920px] mx-auto px-2 sm:px-4 lg:px-6 flex justify-between items-center text-xs md:text-sm">
                 <div class="flex items-center space-x-4 md:space-x-6">
                     @if($email = \App\Models\Setting::get('email'))
                         <div class="flex items-center">
@@ -253,7 +253,7 @@
         </div>
 
         <!-- Navigation Bar -->
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center relative">
+        <nav class="w-[98%] max-w-[1920px] mx-auto px-2 sm:px-4 lg:px-6 py-4 flex justify-between items-center relative">
             <!-- Mobile Menu Button -->
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden p-2 rounded-lg hover:bg-black/5" aria-label="Toggle menu">
                 <svg x-show="!mobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,8 +271,8 @@
                         <img src="{{ media_url($siteLogo) }}" alt="{{ $siteName }}" class="h-16 w-auto md:h-24 flex-shrink-0">
                     @endif
                     <span class="font-bold leading-tight flex-1 site-name-text">
-                        <span x-show="currentLang === 'en'" class="text-base md:text-lg lg:text-2xl">{{ $siteName }}</span>
-                        <span x-show="currentLang === 'ml'" class="text-base md:text-lg lg:text-xl xl:text-xl" x-cloak>{{ $siteNameMl }}</span>
+                        <span x-show="currentLang === 'en'" class="text-base md:text-2xl lg:text-4xl">{{ $siteName }}</span>
+                        <span x-show="currentLang === 'ml'" class="text-base md:text-2xl lg:text-3xl" x-cloak>{{ $siteNameMl }}</span>
                     </span>
                 </a>
             </div>
@@ -287,7 +287,7 @@
                     <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"/>
                         <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z"/>
-                    </svg>
+                    </svg>Admin Login
                 </a>
             </div>
 
@@ -418,19 +418,19 @@
     </main>
 
     <footer class="bg-gray-900 border-t border-gray-800 pt-16 pb-8 mt-20 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 mb-16">
+        <div class="w-[98%] max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1.5fr_1.5fr] gap-x-10 gap-y-12 mb-16">
                 <!-- About Side -->
                 <div class="space-y-6">
                     <a href="/" class="flex items-center space-x-3">
                         @if($siteLogo)
-                            <img src="{{ media_url($siteLogo) }}" alt="{{ $siteName }}" class="h-8 md:h-10 w-auto">
+                            <img src="{{ media_url($siteLogo) }}" alt="{{ $siteName }}" class="h-20 md:h-28 w-auto">
                         @endif
-                        <span class="text-xl font-bold text-white">
+                        <span class="text-2xl font-bold text-white">
                             {{ $siteName }}
                         </span>
                     </a>
-                    <p class="text-gray-400 text-sm leading-relaxed max-w-xs">
+                    <p class="text-gray-400 text-base leading-relaxed max-w-sm">
                         <span x-show="currentLang === 'en'">{{ \App\Models\Setting::get('footer_about_text', 'Leading provider of customized IT solutions and professional consultancy services.') }}</span>
                         <span x-show="currentLang === 'ml'" x-cloak>{{ \App\Models\Setting::get('footer_about_text_ml', \App\Models\Setting::get('footer_about_text', 'Leading provider of customized IT solutions and professional consultancy services.')) }}</span>
                     </p>
@@ -438,11 +438,11 @@
 
                 <!-- Footer Menu -->
                 <div>
-                    <h4 class="text-white font-bold mb-6 text-lg">
+                    <h4 class="text-white font-bold mb-6 text-xl">
                         <span x-show="currentLang === 'en'">{{ \App\Models\Setting::get('footer_nav_title', 'Quick Links') }}</span>
                         <span x-show="currentLang === 'ml'" x-cloak>{{ \App\Models\Setting::get('footer_nav_title_ml', 'പ്രധാന ലിങ്കുകൾ') }}</span>
                     </h4>
-                    <ul class="space-y-3">
+                    <ul class="space-y-4">
                         @php
                             $selectedMenuIds = \App\Models\Setting::get('footer_selected_menus', []);
                             $customFooterMenu = [];
@@ -458,7 +458,7 @@
                         @if(count($customFooterMenu) > 0)
                             @foreach($customFooterMenu as $item)
                                 <li>
-                                    <a href="{{ $item->url }}" class="text-gray-400 hover:text-blue-400 text-sm transition flex items-center gap-2">
+                                    <a href="{{ $item->url }}" class="text-gray-400 hover:text-blue-400 text-base transition flex items-center gap-2">
                                         <span class="w-1 h-1 bg-blue-500 rounded-full"></span> 
                                         <span x-show="currentLang === 'en'">{{ $item->label }}</span>
                                         <span x-show="currentLang === 'ml'" x-cloak>{{ $item->label_ml ?? $item->label }}</span>
@@ -468,7 +468,7 @@
                         @elseif($footerMenu->count() > 0)
                             @foreach($footerMenu as $item)
                                 <li>
-                                    <a href="{{ $item->url }}" class="text-gray-400 hover:text-blue-400 text-sm transition flex items-center gap-2">
+                                    <a href="{{ $item->url }}" class="text-gray-400 hover:text-blue-400 text-base transition flex items-center gap-2">
                                         <span class="w-1 h-1 bg-blue-500 rounded-full"></span> 
                                         <span x-show="currentLang === 'en'">{{ $item->label }}</span>
                                         <span x-show="currentLang === 'ml'" x-cloak>{{ $item->label_ml ?? $item->label }}</span>
@@ -478,7 +478,7 @@
                         @else
                             @foreach($pages->take(5) as $p)
                                 <li>
-                                    <a href="{{ route('page.show', $p->slug) }}" class="text-gray-400 hover:text-blue-400 text-sm transition flex items-center gap-2">
+                                    <a href="{{ route('page.show', $p->slug) }}" class="text-gray-400 hover:text-blue-400 text-base transition flex items-center gap-2">
                                         <span class="w-1 h-1 bg-blue-500 rounded-full"></span> 
                                         <span x-show="currentLang === 'en'">{{ $p->title }}</span>
                                         <span x-show="currentLang === 'ml'" x-cloak>{{ $p->title_ml ?? $p->title }}</span>
@@ -491,11 +491,11 @@
 
                 <!-- Contact Info -->
                 <div>
-                    <h4 class="text-white font-bold mb-6 text-lg">
+                    <h4 class="text-white font-bold mb-6 text-xl">
                         <span x-show="currentLang === 'en'">Contact Us</span>
                         <span x-show="currentLang === 'ml'" x-cloak>ഞങ്ങളെ ബന്ധപ്പെടുക</span>
                     </h4>
-                    <ul class="space-y-4 text-sm text-gray-400">
+                    <ul class="space-y-4 text-base text-gray-400">
                         @if($address = \App\Models\Setting::get('address'))
                             <li class="flex items-start gap-3">
                                 <svg class="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -547,7 +547,7 @@
 
                 <!-- Google Map -->
                 <div>
-                    <h4 class="text-white font-bold mb-6 text-lg">
+                    <h4 class="text-white font-bold mb-6 text-xl">
                         <span x-show="currentLang === 'en'">Our Location</span>
                         <span x-show="currentLang === 'ml'" x-cloak>ലൊക്കേഷൻ</span>
                     </h4>
@@ -585,7 +585,7 @@
                     <span x-show="currentLang === 'ml'" x-cloak>{{ $siteNameMl }}</span>. All rights reserved.
                     <span class="mx-2 hidden sm:inline">|</span>
                     <br class="sm:hidden">
-                    Powered by <a href="https://pravasisit.com" target="_blank" class="hover:text-white transition-colors">Pravasis IT Solutions</a>
+                    Powered by <a href="https://pravasisit.com" target="_blank" class="hover:text-white transition-colors"><strong>Pravasis IT Solutions</strong></a>
                 </p>
             </div>
         </div>
