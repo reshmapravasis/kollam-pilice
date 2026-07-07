@@ -146,6 +146,14 @@ class PageResource extends Resource
                                                     Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)'),
                                                 ]),
                                                 Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
+                                                Forms\Components\Select::make('heading_size')
+                                                    ->label('Heading Size')
+                                                    ->options([
+                                                        'text-xl md:text-2xl' => 'Small',
+                                                        'text-2xl md:text-3xl' => 'Normal',
+                                                        'text-3xl md:text-4xl' => 'Large',
+                                                        'text-4xl md:text-5xl' => 'Extra Large',
+                                                    ])->default('text-3xl md:text-4xl'),
 
                                                 Forms\Components\ColorPicker::make('heading_color')->default('#111827'), Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
                                                 Forms\Components\Select::make('heading_alignment')
@@ -216,6 +224,14 @@ class PageResource extends Resource
                                                     Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)'),
                                                 ]),
                                                 Forms\Components\ColorPicker::make('heading_color')->default('#ffffff'),
+                                                Forms\Components\Select::make('heading_size')
+                                                    ->label('Heading Size')
+                                                    ->options([
+                                                        'text-xl md:text-2xl' => 'Small',
+                                                        'text-2xl md:text-3xl' => 'Normal',
+                                                        'text-3xl md:text-4xl' => 'Large',
+                                                        'text-4xl md:text-5xl' => 'Extra Large',
+                                                    ])->default('text-3xl md:text-4xl'),
 
                                                 Forms\Components\ColorPicker::make('heading_color')->default('#ffffff'), Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
                                                 Forms\Components\Select::make('heading_alignment')
@@ -321,6 +337,14 @@ class PageResource extends Resource
                                                         Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)'),
                                                     ])->columnSpanFull(),
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
+                                                    Forms\Components\Select::make('heading_size')
+                                                        ->label('Heading Size')
+                                                        ->options([
+                                                            'text-xl md:text-2xl' => 'Small',
+                                                            'text-2xl md:text-3xl' => 'Normal',
+                                                            'text-3xl md:text-4xl' => 'Large',
+                                                            'text-4xl md:text-5xl' => 'Extra Large',
+                                                        ])->default('text-3xl md:text-4xl'),
 
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'), Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
                                                     Forms\Components\Select::make('heading_alignment')
@@ -367,6 +391,14 @@ class PageResource extends Resource
                                                         Forms\Components\TextInput::make('heading_ml')->label('Heading (Malayalam)'),
                                                     ])->columnSpanFull(),
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
+                                                    Forms\Components\Select::make('heading_size')
+                                                        ->label('Heading Size')
+                                                        ->options([
+                                                            'text-xl md:text-2xl' => 'Small',
+                                                            'text-2xl md:text-3xl' => 'Normal',
+                                                            'text-3xl md:text-4xl' => 'Large',
+                                                            'text-4xl md:text-5xl' => 'Extra Large',
+                                                        ])->default('text-3xl md:text-4xl'),
 
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'), Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
                                                     Forms\Components\Select::make('heading_alignment')
@@ -410,6 +442,14 @@ class PageResource extends Resource
                                                         ->default('text-center'),
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
                                                     Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
+                                                    Forms\Components\Select::make('heading_size')
+                                                        ->label('Heading Size')
+                                                        ->options([
+                                                            'text-xl md:text-2xl' => 'Small',
+                                                            'text-2xl md:text-3xl' => 'Normal',
+                                                            'text-3xl md:text-4xl' => 'Large',
+                                                            'text-4xl md:text-5xl' => 'Extra Large',
+                                                        ])->default('text-3xl md:text-4xl'),
                                                     Forms\Components\Select::make('columns')
                                                         ->options([
                                                             '2' => '2 Columns',
@@ -469,6 +509,14 @@ class PageResource extends Resource
                                                         ->default('text-center'),
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
                                                     Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
+                                                    Forms\Components\Select::make('heading_size')
+                                                        ->label('Heading Size')
+                                                        ->options([
+                                                            'text-xl md:text-2xl' => 'Small',
+                                                            'text-2xl md:text-3xl' => 'Normal',
+                                                            'text-3xl md:text-4xl' => 'Large',
+                                                            'text-4xl md:text-5xl' => 'Extra Large',
+                                                        ])->default('text-3xl md:text-4xl'),
                                                 ]),
                                                 Forms\Components\Repeater::make('items')
                                                     ->schema([
@@ -506,6 +554,14 @@ class PageResource extends Resource
                                                         ->default('text-center'),
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
                                                     Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
+                                                    Forms\Components\Select::make('heading_size')
+                                                        ->label('Heading Size')
+                                                        ->options([
+                                                            'text-xl md:text-2xl' => 'Small',
+                                                            'text-2xl md:text-3xl' => 'Normal',
+                                                            'text-3xl md:text-4xl' => 'Large',
+                                                            'text-4xl md:text-5xl' => 'Extra Large',
+                                                        ])->default('text-3xl md:text-4xl'),
                                                     Forms\Components\Grid::make(2)->schema([
                                                         Forms\Components\TextInput::make('button_text')->label('Button Text (English)')->default('Send Message'),
                                                         Forms\Components\TextInput::make('button_text_ml')->label('Button Text (Malayalam)')->default('സന്ദേശം അയക്കുക'),
@@ -527,6 +583,14 @@ class PageResource extends Resource
                                                         ->default('text-center'),
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
                                                     Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
+                                                    Forms\Components\Select::make('heading_size')
+                                                        ->label('Heading Size')
+                                                        ->options([
+                                                            'text-xl md:text-2xl' => 'Small',
+                                                            'text-2xl md:text-3xl' => 'Normal',
+                                                            'text-3xl md:text-4xl' => 'Large',
+                                                            'text-4xl md:text-5xl' => 'Extra Large',
+                                                        ])->default('text-3xl md:text-4xl'),
                                                     Forms\Components\Select::make('columns')
                                                         ->options([
                                                             '2' => '2 Columns',
@@ -574,6 +638,14 @@ class PageResource extends Resource
                                                         ->default('text-center'),
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
                                                     Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
+                                                    Forms\Components\Select::make('heading_size')
+                                                        ->label('Heading Size')
+                                                        ->options([
+                                                            'text-xl md:text-2xl' => 'Small',
+                                                            'text-2xl md:text-3xl' => 'Normal',
+                                                            'text-3xl md:text-4xl' => 'Large',
+                                                            'text-4xl md:text-5xl' => 'Extra Large',
+                                                        ])->default('text-3xl md:text-4xl'),
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
 
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'), Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
@@ -624,6 +696,14 @@ class PageResource extends Resource
                                                         ->default('text-center'),
                                                     Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
                                                     Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
+                                                    Forms\Components\Select::make('heading_size')
+                                                        ->label('Heading Size')
+                                                        ->options([
+                                                            'text-xl md:text-2xl' => 'Small',
+                                                            'text-2xl md:text-3xl' => 'Normal',
+                                                            'text-3xl md:text-4xl' => 'Large',
+                                                            'text-4xl md:text-5xl' => 'Extra Large',
+                                                        ])->default('text-3xl md:text-4xl'),
                                                     Forms\Components\ColorPicker::make('member_name_color')->label('Name Color')->default('#111827'),
                                                     Forms\Components\ColorPicker::make('member_details_color')->label('Details Color')->default('#4b5563'),
                                                 ]),
@@ -702,6 +782,14 @@ class PageResource extends Resource
                                                     ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
                                                     ->default('text-left'),
                                                 Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
+                                                Forms\Components\Select::make('heading_size')
+                                                    ->label('Heading Size')
+                                                    ->options([
+                                                        'text-xl md:text-2xl' => 'Small',
+                                                        'text-2xl md:text-3xl' => 'Normal',
+                                                        'text-3xl md:text-4xl' => 'Large',
+                                                        'text-4xl md:text-5xl' => 'Extra Large',
+                                                    ])->default('text-3xl md:text-4xl'),
 
                                                 Forms\Components\ColorPicker::make('heading_color')->default('#111827'), Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
                                                 Forms\Components\Select::make('columns')
@@ -762,6 +850,14 @@ class PageResource extends Resource
                                                     ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
                                                     ->default('text-left'),
                                                 Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
+                                                Forms\Components\Select::make('heading_size')
+                                                    ->label('Heading Size')
+                                                    ->options([
+                                                        'text-xl md:text-2xl' => 'Small',
+                                                        'text-2xl md:text-3xl' => 'Normal',
+                                                        'text-3xl md:text-4xl' => 'Large',
+                                                        'text-4xl md:text-5xl' => 'Extra Large',
+                                                    ])->default('text-3xl md:text-4xl'),
 
                                                 Forms\Components\ColorPicker::make('heading_color')->default('#111827'), Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
                                                 Forms\Components\Select::make('columns')
@@ -812,6 +908,14 @@ class PageResource extends Resource
                                                     ->options(['text-left' => 'Left', 'text-center' => 'Center', 'text-right' => 'Right'])
                                                     ->default('text-left'),
                                                 Forms\Components\ColorPicker::make('heading_color')->default('#111827'),
+                                                Forms\Components\Select::make('heading_size')
+                                                    ->label('Heading Size')
+                                                    ->options([
+                                                        'text-xl md:text-2xl' => 'Small',
+                                                        'text-2xl md:text-3xl' => 'Normal',
+                                                        'text-3xl md:text-4xl' => 'Large',
+                                                        'text-4xl md:text-5xl' => 'Extra Large',
+                                                    ])->default('text-3xl md:text-4xl'),
 
                                                 Forms\Components\ColorPicker::make('heading_color')->default('#111827'), Forms\Components\ColorPicker::make('underline_color')->label('Underline Color')->default('#2563eb'),
                                                 Forms\Components\Select::make('columns')

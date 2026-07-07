@@ -110,7 +110,7 @@
                              alt="{{ $block['data']['heading'] ?? 'Hero Image' }}">
                     @endif
                     <div class="relative z-10 {{ $block['data']['heading_alignment'] ?? 'text-center' }} px-6 md:px-12 py-12 md:py-20 max-w-5xl mx-auto">
-                        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6 drop-shadow-md leading-tight" style="color: {{ $block['data']['heading_color'] ?? '#ffffff' }}">
+                        <h1 class="{{ $block['data']['heading_size'] ?? 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl' }} font-extrabold mb-4 sm:mb-6 drop-shadow-md leading-tight" style="color: {{ $block['data']['heading_color'] ?? '#ffffff' }}">
                             <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? '' }}</span>
                             <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? '' }}</span>
                         </h1>
@@ -149,7 +149,7 @@
                     @endphp
                     @if($hasHeading)
                         <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-12">
-                            <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                            <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                 <span x-show="currentLang === 'en'">{{ $heading }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $headingMl ?? $heading }}</span>
                                 <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
@@ -235,7 +235,7 @@
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20" @if(!empty($block['data']['anchor_id'])) id="{{ $block['data']['anchor_id'] }}" @endif>
                         @if(!empty($block['data']['heading']))
                             <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-12">
-                                <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                                <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                     <span x-show="currentLang === 'en'">{{ $block['data']['heading'] }}</span>
                                     <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] }}</span>
                                     <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
@@ -328,7 +328,7 @@
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20" id="{{ $block['data']['anchor_id'] ?? '' }}">
                     @if(!empty($block['data']['heading']))
                         <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-12">
-                            <h2 class="text-3xl md:text-4xl font-extrabold" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                            <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                 <span x-show="currentLang === 'en'">{{ $block['data']['heading'] }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] }}</span>
                             </h2>
@@ -406,7 +406,7 @@
                     <div class="flex flex-col {{ $flexClasses }} items-center gap-10 md:gap-16">
                         <div class="w-full {{ $textWidth }} {{ $block['data']['heading_alignment'] ?? 'text-left' }}">
                             @if(!empty($block['data']['heading']))
-                                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                                <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold text-gray-900 mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                     <span x-show="currentLang === 'en'">{{ $block['data']['heading'] }}</span>
                                     <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] }}</span>
                                     <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
@@ -453,7 +453,7 @@
                 <section id="{{ $block['data']['anchor_id'] ?? '' }}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
                     <div class="flex flex-col @if(($block['data']['video_position'] ?? 'right') == 'left') sm:flex-row-reverse @else sm:flex-row @endif items-center gap-10 md:gap-16">
                         <div class="w-full {{ $textWidth }} {{ $block['data']['heading_alignment'] ?? 'text-left' }}">
-                            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                            <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold text-gray-900 mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                 <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? '' }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? '' }}</span>
                                 <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
@@ -522,7 +522,7 @@
                 @endphp
                 <section id="{{ $block['data']['anchor_id'] ?? '' }}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
                     <div class="mb-10 {{ $block['data']['heading_alignment'] ?? 'text-center md:text-left' }}">
-                        <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                        <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                             <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'Our Services' }}</span>
                             <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'നമ്മുടെ സേവനങ്ങൾ' }}</span>
                             <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
@@ -586,7 +586,7 @@
                 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
                     @if(!empty($block['data']['heading']))
                         <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-12">
-                            <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                            <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                 <span x-show="currentLang === 'en'">{{ $block['data']['heading'] }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] }}</span>
                                 <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
@@ -648,7 +648,7 @@
                 <section class="py-24 bg-gray-900 overflow-hidden">
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-16">
-                            <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#ffffff' }}">
+                            <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#ffffff' }}">
                                 <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'What Our Clients Say' }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'അവർ എന്താണ് പറയുന്നത്' }}</span>
                                 <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#3b82f6' }}"></div>
@@ -679,7 +679,7 @@
             @case('contact_form')
                 <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 bg-white rounded-[2rem] md:rounded-[3rem] shadow-2xl shadow-blue-900/5 mt-12 mb-12 border border-blue-50">
                     <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-12">
-                        <h2 class="text-3xl md:text-4xl font-extrabold mb-8 inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                        <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold mb-8 inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                             <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'Contact Us' }}</span>
                             <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'ഞങ്ങളെ ബന്ധപ്പെടുക' }}</span>
                             <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
@@ -784,7 +784,7 @@
                 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gray-50">
                     @if(!empty($block['data']['heading']) || !empty($block['data']['heading_ml']))
                     <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-16">
-                        <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative text-blue-900">
+                        <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold mb-8 tracking-tight inline-block relative text-blue-900">
                             <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? '' }}</span>
                             <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? '' }}</span>
                             <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#3b82f6' }}"></div>
@@ -888,7 +888,7 @@
                 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                     @if(!empty($block['data']['heading']))
                         <div class="{{ $block['data']['heading_alignment'] ?? 'text-center' }} mb-16">
-                            <h2 class="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
+                            <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold mb-8 tracking-tight inline-block relative" style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                                 <span x-show="currentLang === 'en'">{{ $block['data']['heading'] }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] }}</span>
                                 <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $block['data']['underline_color'] ?? '#2563eb' }}"></div>
@@ -942,7 +942,7 @@
                             $items = $servicesBlock['data']['items'] ?? [];
                         @endphp
                         <div class="mb-10 {{ $servicesBlock['data']['heading_alignment'] ?? 'text-center md:text-left' }}">
-                            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8 tracking-tight inline-block relative">
+                            <h2 class="{{ $servicesBlock['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold text-gray-900 mb-8 tracking-tight inline-block relative">
                                 <span x-show="currentLang === 'en'">{{ $servicesBlock['data']['heading'] ?? 'Our Services' }}</span>
                                 <span x-show="currentLang === 'ml'" x-cloak>{{ $servicesBlock['data']['heading_ml'] ?? $servicesBlock['data']['heading'] ?? 'നമ്മുടെ സേവനങ്ങൾ' }}</span>
                                 <div class="absolute -bottom-4 left-0 w-full h-1.5 rounded-full" style="background-color: {{ $servicesBlock['data']['underline_color'] ?? '#2563eb' }}"></div>
@@ -997,7 +997,7 @@
             <section id="{{ $afAnchor }}" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
                 @if(!empty($block['data']['heading']) || !empty($block['data']['heading_ml']))
                     <div class="{{ $block['data']['heading_alignment'] ?? 'text-left' }} mb-10">
-                        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight inline-block relative"
+                        <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold mb-4 tracking-tight inline-block relative"
                             style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                             <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'Application Forms' }}</span>
                             <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'അപേക്ഷാ ഫോമുകൾ' }}</span>
@@ -1085,7 +1085,7 @@
             <section id="{{ $schAnchor }}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
                 @if(!empty($block['data']['heading']) || !empty($block['data']['heading_ml']))
                     <div class="{{ $block['data']['heading_alignment'] ?? 'text-left' }} mb-10">
-                        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight inline-block relative"
+                        <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold mb-4 tracking-tight inline-block relative"
                             style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                             <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'Schemes' }}</span>
                             <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'പദ്ധതികൾ' }}</span>
@@ -1143,7 +1143,7 @@
             <section id="{{ $repAnchor }}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
                 @if(!empty($block['data']['heading']) || !empty($block['data']['heading_ml']))
                     <div class="{{ $block['data']['heading_alignment'] ?? 'text-left' }} mb-10">
-                        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight inline-block relative"
+                        <h2 class="{{ $block['data']['heading_size'] ?? 'text-3xl md:text-4xl' }} font-extrabold mb-4 tracking-tight inline-block relative"
                             style="color: {{ $block['data']['heading_color'] ?? '#111827' }}">
                             <span x-show="currentLang === 'en'">{{ $block['data']['heading'] ?? 'Annual Reports' }}</span>
                             <span x-show="currentLang === 'ml'" x-cloak>{{ $block['data']['heading_ml'] ?? $block['data']['heading'] ?? 'വാർഷിക റിപ്പോർട്ടുകൾ' }}</span>
