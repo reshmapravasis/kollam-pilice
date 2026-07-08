@@ -14,17 +14,20 @@ class StatsOverview extends BaseWidget
     {
         $newInquiriesCount = Inquiry::where('created_at', '>=', Carbon::now()->subDays(7))->count();
         $totalInquiries = Inquiry::count();
-        $publishedPages = Page::where('is_published', true)->count();
-        $unpublishedPages = Page::where('is_published', false)->count();
+        
+        $publishedPages = Page::where('type', 'page')->where('is_published', true)->count();
+        $unpublishedPages = Page::where('type', 'page')->where('is_published', false)->count();
 
-        // Calculate total images and videos ONLY from Gallery pages
+        $publishedPosts = Page::where('type', 'post')->where('is_published', true)->count();
+        $unpublishedPosts = Page::where('type', 'post')->where('is_published', false)->count();
+
+        // Calculate total images and videos across all pages
         $totalImages = 0;
         $totalVideos = 0;
 
-        // Filter pages that are likely gallery pages based on slug
-        $galleryPages = Page::where('slug', 'like', '%gallery%')->get();
+        $pages = Page::all();
         
-        foreach ($galleryPages as $page) {
+        foreach ($pages as $page) {
             $content = $page->content ?: [];
             foreach ($content as $block) {
                 $data = $block['data'] ?? [];
@@ -34,23 +37,34 @@ class StatsOverview extends BaseWidget
                     $totalImages += count($data['images']);
                 }
 
-                // Count videos
-                if ($block['type'] === 'video' && !empty($data['url'])) {
-                    $totalVideos++;
+                // Count single video block (URL or file)
+                if ($block['type'] === 'video') {
+                    if (!empty($data['url']) || !empty($data['file'])) {
+                        $totalVideos++;
+                    }
                 }
+
+                // Count video gallery videos
                 if ($block['type'] === 'video_gallery' && !empty($data['videos'])) {
                     $totalVideos += count($data['videos']);
+                }
+
+                // Count split video content block (URL or file)
+                if ($block['type'] === 'split_video_content') {
+                    if (!empty($data['video_url']) || !empty($data['video_file'])) {
+                        $totalVideos++;
+                    }
                 }
             }
         }
 
         return [
-            Stat::make('Total Pages', Page::count())
+            Stat::make('Total Pages', Page::where('type', 'page')->count())
                 ->description($publishedPages . ' published | ' . $unpublishedPages . ' hidden')
                 ->descriptionIcon('heroicon-m-document-text')
                 ->color('success'),
             Stat::make('Blog Posts', Page::where('type', 'post')->count())
-                ->description('Active articles')
+                ->description($publishedPosts . ' published | ' . $unpublishedPosts . ' hidden')
                 ->descriptionIcon('heroicon-m-newspaper')
                 ->color('info'),
             Stat::make('Total Inquiries', $totalInquiries)
